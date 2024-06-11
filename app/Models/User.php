@@ -54,6 +54,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @method static Builder|User whereUpdatedAt($value)
  * @method static Builder|User withTrashed()
  * @method static Builder|User withoutTrashed()
+ * @method static create($user)
  * @mixin \Eloquent
  */
 class User extends Authenticatable
