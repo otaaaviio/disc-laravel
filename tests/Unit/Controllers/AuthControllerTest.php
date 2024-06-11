@@ -12,7 +12,7 @@ uses(TestCase::class);
 
 test('test login', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('login')->once();
+        $mock->shouldReceive('login')->once()->andReturn('token');
     });
 
     $response = $this->postJson('api/auth/login', [
@@ -25,19 +25,25 @@ test('test login', function () {
         'message',
         'token',
     ]);
+
+    $responseData = json_decode($response->getContent(), true);
+    $this->assertNotEmpty($responseData['token']);
 });
 
 test('test login with invalid credentials', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('login')->andThrow(new AuthException());
+        $mock->shouldReceive('login')->andThrow(AuthException::invalidCredentials());
     });
 
     $response = $this->postJson('api/auth/login', [
-        'email' => 'asd@asdok.com',
-        'password' => 'asdsda',
+        'email' => 'mock@example.com',
+        'password' => 'password',
     ]);
 
     $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
+    $response->assertJson([
+        'message' => 'Invalid credentials',
+    ]);
 });
 
 test('test logout', function () {
@@ -60,7 +66,18 @@ test('test get user', function () {
     $user->shouldReceive('withAccessToken')->andReturnSelf();
     $user->shouldReceive('getAttribute')->andReturn('token');
 
-    $authResource = new AuthResource($user);
+    $mockUser = Mockery::mock(User::class);
+    $mockUser->shouldReceive('getAttribute')
+        ->with('id')
+        ->andReturn(1);
+    $mockUser->shouldReceive('getAttribute')
+        ->with('name')
+        ->andReturn('test');
+    $mockUser->shouldReceive('getAttribute')
+        ->with('email')
+        ->andReturn('mock@example.com');
+
+    $authResource = new AuthResource($mockUser);
 
     $this->mock(IAuthService::class, function (MockInterface $mock) use ($authResource) {
         $mock->shouldReceive('user')->once()->andReturn($authResource);
