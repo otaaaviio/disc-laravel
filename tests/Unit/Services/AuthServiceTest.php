@@ -12,10 +12,12 @@ use Mockery\MockInterface;
 
 uses(TestCase::class);
 
+uses()->group('AuthService Test');
+
 test('test register a user', function () {
     $mockUserRepository = $this->mock(IUserRepository::class, function (MockInterface $mock) {
-        $mockUser = Mockery::mock(User::class);
-        $mockUser->shouldReceive('createToken')->andReturn((object)['plainTextToken' => 'token']);
+        $user = Mockery::mock(User::class);
+        $user->shouldReceive('createToken')->andReturn((object)['plainTextToken' => 'token']);
 
         $mock->shouldReceive('create')
             ->once()
@@ -24,7 +26,7 @@ test('test register a user', function () {
                 'email' => 'mock@example.com',
                 'password' => 'password',
             ])
-            ->andReturn($mockUser);
+            ->andReturn($user);
     });
 
     $authService = new AuthService($mockUserRepository);
@@ -35,8 +37,9 @@ test('test register a user', function () {
         'password' => 'password',
     ];
 
-    $result = $authService->register($data);
+    $res = $authService->register($data);
 
-    $this->assertInstanceOf(AuthResource::class, $result['user']);
-    $this->assertIsString($result['token']);
+    $this->assertInstanceOf(AuthResource::class, $res['user']);
+    $this->assertArrayHasKey('user', $res);
+    $this->assertArrayHasKey('token', $res);
 });

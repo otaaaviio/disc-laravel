@@ -8,77 +8,76 @@ use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
-class AuthControllerTest extends TestCase
-{
-    use DatabaseTransactions, WithFaker;
+uses(TestCase::class, DatabaseTransactions::class, WithFaker::class);
 
-    public function testLogin()
-    {
-        $user = User::factory()->create();
+uses()->group('Auth Routes Test');
 
-        $response = $this->postJson('api/auth/login', [
+test('can login in system', function () {
+    $user = User::factory()->create();
+
+    $response = $this->postJson('api/auth/login', [
+        'email' => $user->email,
+        'password' => 'password',
+    ]);
+
+    $response->assertStatus(StatusCode::HTTP_OK);
+    $response->assertJsonStructure([
+        'message',
+        'token',
+    ]);
+});
+
+test('cannot login with invalid credentials', function () {
+    User::factory()->make();
+
+    $response = $this->postJson('api/auth/login', [
+        'email' => 'fake@email.com',
+        'password' => 'password',
+    ]);
+
+    $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
+});
+
+test('can logout', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->postJson('api/auth/logout');
+    $response->assertStatus(StatusCode::HTTP_OK);
+});
+
+test('can register a new user', function () {
+    $payload = [
+        'name' => $this->faker->name,
+        'email' => $this->faker->unique()->safeEmail,
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
+
+    $response = $this->postJson('api/auth/register', $payload);
+    $response->assertStatus(StatusCode::HTTP_CREATED);
+    $response->assertJsonStructure([
+        'user',
+        'token',
+    ]);
+});
+
+test('can get user authenticated', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->getJson('api/auth/user');
+
+    $response->assertStatus(StatusCode::HTTP_OK);
+    $response->assertJson([
+        'user' => [
+            'id' => $user->id,
+            'name' => $user->name,
             'email' => $user->email,
-            'password' => 'password',
-        ]);
+        ],
+    ]);
+});
 
-        $response->assertStatus(StatusCode::HTTP_OK);
-        $response->assertJsonStructure([
-            'message',
-            'token',
-        ]);
-    }
+test('cannot access user authenticated route without authentication', function () {
+    $response = $this->getJson('api/auth/user');
 
-    public function testLoginWithInvalidCredentials()
-    {
-        User::factory()->create();
-
-        $response = $this->postJson('api/auth/login', [
-            'email' => 'fake@email.com',
-            'password' => 'password',
-        ]);
-
-        $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
-    }
-
-    public function testLogout()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->postJson('api/auth/logout');
-        $response->assertStatus(StatusCode::HTTP_OK);
-
-    }
-
-    public function testRegister()
-    {
-        $payload = [
-            'name' => $this->faker->name,
-            'email' => $this->faker->unique()->safeEmail,
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ];
-
-        $response = $this->postJson('api/auth/register', $payload);
-        $response->assertStatus(StatusCode::HTTP_CREATED);
-        $response->assertJsonStructure([
-            'user',
-            'token',
-        ]);
-    }
-
-    public function testGetUserAuthenticated()
-    {
-        $user = User::factory()->create();
-
-        $response = $this->actingAs($user)->getJson('api/auth/user');
-
-        $response->assertStatus(StatusCode::HTTP_OK);
-        $response->assertJson([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-            ],
-        ]);
-    }
-}
+    $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
+});

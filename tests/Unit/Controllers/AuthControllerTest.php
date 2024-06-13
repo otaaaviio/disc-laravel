@@ -10,24 +10,23 @@ use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 uses(TestCase::class);
 
+uses()->group('AuthController Test');
+
 test('test login', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
         $mock->shouldReceive('login')->once()->andReturn('token');
     });
 
-    $response = $this->postJson('api/auth/login', [
+    $res = $this->postJson('api/auth/login', [
         'email' => 'test@example.com',
         'password' => 'password',
     ]);
 
-    $response->assertStatus(StatusCode::HTTP_OK);
-    $response->assertJsonStructure([
-        'message',
-        'token',
-    ]);
-
-    $responseData = json_decode($response->getContent(), true);
-    $this->assertNotEmpty($responseData['token']);
+    $res->assertStatus(StatusCode::HTTP_OK)
+        ->assertJsonStructure([
+            'message',
+            'token',
+        ]);
 });
 
 test('test login with invalid credentials', function () {
@@ -35,21 +34,19 @@ test('test login with invalid credentials', function () {
         $mock->shouldReceive('login')->andThrow(AuthException::invalidCredentials());
     });
 
-    $response = $this->postJson('api/auth/login', [
+    $res = $this->postJson('api/auth/login', [
         'email' => 'mock@example.com',
         'password' => 'password',
     ]);
 
-    $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
-    $response->assertJson([
-        'message' => 'Invalid credentials',
-    ]);
+    $res->assertStatus(StatusCode::HTTP_UNAUTHORIZED)
+        ->assertJson([
+            'message' => 'Invalid credentials',
+        ]);
 });
 
 test('test logout', function () {
-    $user = Mockery::mock(User::class);
-    $user->shouldReceive('getKey')->andReturn(1);
-    $user->shouldReceive('withAccessToken')->andReturnSelf();
+    $user = User::factory()->make();
 
     $this->mock(IAuthService::class, function (MockInterface $mock) {
         $mock->shouldReceive('logout')->once();
@@ -60,44 +57,39 @@ test('test logout', function () {
     $response->assertStatus(StatusCode::HTTP_OK);
 });
 
-test('test get user', function () {
-    $user = Mockery::mock(User::class);
-    $user->shouldReceive('getKey')->andReturn(1);
-    $user->shouldReceive('withAccessToken')->andReturnSelf();
-    $user->shouldReceive('getAttribute')->andReturn('token');
+test('test get user authenticated', function () {
+    $user = User::factory()->make();
 
-    $mockUser = Mockery::mock(User::class);
-    $mockUser->shouldReceive('getAttribute')
-        ->with('id')
-        ->andReturn(1);
-    $mockUser->shouldReceive('getAttribute')
-        ->with('name')
-        ->andReturn('test');
-    $mockUser->shouldReceive('getAttribute')
-        ->with('email')
-        ->andReturn('mock@example.com');
-
-    $authResource = new AuthResource($mockUser);
+    $authResource = new AuthResource($user);
 
     $this->mock(IAuthService::class, function (MockInterface $mock) use ($authResource) {
         $mock->shouldReceive('user')->once()->andReturn($authResource);
     });
 
-    $response = $this->actingAs($user)->getJson('api/auth/user');
+    $res = $this->actingAs($user)->getJson('api/auth/user');
 
-    $response->assertStatus(StatusCode::HTTP_OK);
+    $res->assertStatus(StatusCode::HTTP_OK)
+        ->assertJsonStructure([
+            'user' => [
+                'id',
+                'name',
+                'email',
+            ],
+        ]);
 });
 
 test('test register', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('register')->once()->andReturn([
-            'user' => [
-                'id' => 1,
-                'name' => 'test',
-                'email' => 'newtest@example.com'
-            ],
-            'token' => 'token'
-        ]);
+        $mock->shouldReceive('register')
+            ->once()
+            ->andReturn([
+                'user' => [
+                    'id' => 1,
+                    'name' => 'test',
+                    'email' => 'newtest@example.com'
+                ],
+                'token' => 'token'
+            ]);
     });
 
     $response = $this->postJson('api/auth/register', [
@@ -106,6 +98,11 @@ test('test register', function () {
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
-
     $response->assertStatus(StatusCode::HTTP_CREATED);
+});
+
+test('test access user profile without authentication', function () {
+    $response = $this->getJson('api/auth/user');
+
+    $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
 });

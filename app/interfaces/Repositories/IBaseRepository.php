@@ -13,8 +13,8 @@ interface IBaseRepository
 
     public function create(array $data): Model;
 
-    public function update($id, array $data): Model;
+    public function update(int $id, array $data): Model;
 
-    public function delete($id): bool;
+    public function delete(int $id): bool;
 
 }
