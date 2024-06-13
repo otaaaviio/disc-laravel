@@ -22,6 +22,7 @@ use Laravel\Sanctum\PersonalAccessToken;
  * @property int $id
  * @property string $name
  * @property string $email
+ * @property bool $is_super_admin
  * @property mixed $password
  * @property string|null $remember_token
  * @property Carbon|null $email_verified_at

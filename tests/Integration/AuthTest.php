@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 uses(TestCase::class, DatabaseTransactions::class, WithFaker::class);
 
-uses()->group('Auth Routes Test');
+uses()->group('Auth Test');
 
 test('can login in system', function () {
     $user = User::factory()->create();

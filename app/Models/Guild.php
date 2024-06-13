@@ -18,7 +18,7 @@ use Illuminate\Support\Carbon;
  * @property string $name
  * @property string|null $description
  * @property string|null $icon_url
- * @property string|null $invite_link
+ * @property string|null $invite_code
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon|null $deleted_at
@@ -41,6 +41,10 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Guild whereUpdatedAt($value)
  * @method static Builder|Guild withTrashed()
  * @method static Builder|Guild withoutTrashed()
+ * @method static whereHas(string $relation, \Closure $query)
+ * @method static Builder|Guild whereInviteCode($value)
+ * @method static where(string $column, mixed $value)
+ * @method static create(array $data)
  * @mixin \Eloquent
  */
 class Guild extends Model
@@ -51,7 +55,7 @@ class Guild extends Model
         'name',
         'description',
         'icon_url',
-        'invite_url',
+        'invite_code',
     ];
 
     public function channels(): HasMany
@@ -61,6 +65,8 @@ class Guild extends Model
 
     public function members(): BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'guild_members')->using(GuildMember::class);
+        return $this->belongsToMany(User::class, 'guild_members')
+            ->using(GuildMember::class)
+            ->withPivot('role');
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
@@ -15,6 +14,7 @@ return new class extends Migration
             $table->string('name')->index();
             $table->string('email');
             $table->string('password');
+            $table->boolean('is_super_admin')->default(false);
             $table->rememberToken();
             $table->timestamp('email_verified_at')->nullable();
             $table->timestamps();

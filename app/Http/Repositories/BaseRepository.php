@@ -5,6 +5,7 @@ namespace App\Http\Repositories;
 use App\interfaces\Repositories\IBaseRepository;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Throwable;
 
 abstract class BaseRepository implements IBaseRepository
 {
@@ -22,7 +23,7 @@ abstract class BaseRepository implements IBaseRepository
 
     public function find(int $id): Model
     {
-        return $this->model->find($id);
+        return $this->model->findOrFail($id);
     }
 
     public function create(array $data): Model
@@ -30,9 +31,13 @@ abstract class BaseRepository implements IBaseRepository
         return $this->model->create($data);
     }
 
-    public function update($id, array $data): Model
+    /**
+     * @throws Throwable
+     */
+    public function update(Model $model, array $data): Model
     {
-        return $this->model->findOrFail($id)->update($data);
+        $model->update($data);
+        return $model;
     }
 
     public function delete($id): bool

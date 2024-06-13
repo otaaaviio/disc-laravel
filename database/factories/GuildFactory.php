@@ -23,8 +23,13 @@ class GuildFactory extends Factory
     {
         return $this->afterCreating(function (Guild $guild) {
             $guild->name = 'Guild ' . $guild->id;
-            $guild->invite_link = '/guilds/' . $guild->id;
+            $guild->invite_code = $this->getInviteCode() . $guild->id;
             $guild->save();
         });
+    }
+
+    protected function getInviteCode(): string
+    {
+        return $this->faker->regexify('[A-Za-z0-9]{8}');
     }
 }
