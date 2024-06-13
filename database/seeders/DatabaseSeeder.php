@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\enums\Role;
 use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\Message;
@@ -14,8 +15,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'name' => 'Adm User',
+            'email' => 'adm@admin.com',
+            'password' => bcrypt('password'),
+            'is_super_admin' => true,
         ]);
 
         $users = User::factory(50)->create();
@@ -29,5 +32,14 @@ class DatabaseSeeder extends Seeder
             ->recycle($channels)
             ->recycle($users)
             ->create();
+
+        // attach some users to guilds
+        foreach ($guilds as $guild) {
+            $usersToAttach = $users->random(rand(1, 10));
+            $userAdmin = $usersToAttach->random();
+
+            $guild->members()->attach($usersToAttach, ['role' => Role::Member]);
+            $guild->members()->attach($userAdmin, ['role' => Role::Admin]);
+        }
     }
 }
