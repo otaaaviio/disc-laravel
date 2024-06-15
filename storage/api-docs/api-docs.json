@@ -1,31 +1,40 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My First API",
-        "version": "0.1"
+        "title": "Discord",
+        "description": "A clone of discord",
+        "version": "1.0.0"
     },
+    "servers": [
+        {
+            "url": "http://localhost:8000",
+            "description": "local server"
+        }
+    ],
     "paths": {
         "/api/auth/login": {
             "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user",
                 "operationId": "8dcb70df1020986038d098cc08d05dae",
                 "requestBody": {
-                    "description": "User login credentials",
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "email",
-                                    "password"
+                                    "email, password"
                                 ],
                                 "properties": {
                                     "email": {
-                                        "description": "The email of the user",
+                                        "description": "email of user",
                                         "type": "string",
                                         "format": "email"
                                     },
                                     "password": {
-                                        "description": "The password of the user",
+                                        "description": "password of user",
                                         "type": "string",
                                         "format": "password"
                                     }
@@ -39,30 +48,49 @@
                     "200": {
                         "description": "Successful operation"
                     },
+                    "400": {
+                        "description": "Bad Request"
+                    },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
             }
         },
         "/api/auth/logout": {
             "post": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Logout user",
                 "operationId": "69281b12abb272c76871f19cb17ca563",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
                     },
+                    "400": {
+                        "description": "Bad Request"
+                    },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
             }
         },
         "/api/auth/register": {
             "post": {
+                "tags": [
+                    "Registration"
+                ],
+                "summary": "Logout user",
                 "operationId": "d764dd091cc4494ae0baf360b03319f3",
                 "requestBody": {
-                    "description": "User registration data",
                     "required": true,
                     "content": {
                         "application/json": {
@@ -70,23 +98,210 @@
                                 "required": [
                                     "name",
                                     "email",
-                                    "password"
+                                    "password",
+                                    "password_confirmation"
                                 ],
                                 "properties": {
                                     "name": {
-                                        "description": "The name of the user",
-                                        "type": "string",
-                                        "format": "text"
+                                        "description": "User name",
+                                        "type": "string"
                                     },
                                     "email": {
-                                        "description": "The email of the user",
+                                        "description": "email of user",
                                         "type": "string",
                                         "format": "email"
                                     },
                                     "password": {
-                                        "description": "The password of the user",
+                                        "description": "password of user",
                                         "type": "string",
                                         "format": "password"
+                                    },
+                                    "password_confirmation": {
+                                        "description": "password confirmation",
+                                        "type": "string",
+                                        "format": "password"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/auth/user": {
+            "get": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Get authenticated user",
+                "operationId": "b5fdc32df37ea06ec4f0fdc939d25d0f",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/allGuilds": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all guilds",
+                "operationId": "af75ddfcd8992a3b874a33633ae9380c",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds": {
+            "get": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Get all guilds of authenticated user",
+                "operationId": "8df195808eadece1e70bb855829dfc48",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Create a guild",
+                "operationId": "116418c7d458560373dd1ce3f6a089ff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "icon_url"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Guild name",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Guild description",
+                                        "type": "string"
+                                    },
+                                    "icon_url": {
+                                        "description": "Guild Icon Url",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds/{guild}": {
+            "get": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Get a detailed guild",
+                "operationId": "0086d4459ddb8bcbc4d1d7f12f44c668",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Update a guild",
+                "operationId": "c620c99efdb9ee7302f05f2e746fef20",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [],
+                                "properties": {
+                                    "name": {
+                                        "description": "Guild name",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Guild description",
+                                        "type": "string"
+                                    },
+                                    "icon_url": {
+                                        "description": "Guild Icon Url",
+                                        "type": "string"
                                     }
                                 },
                                 "type": "object"
@@ -98,21 +313,106 @@
                     "200": {
                         "description": "Successful operation"
                     },
+                    "400": {
+                        "description": "Bad Request"
+                    },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
-            }
-        },
-        "/api/auth/user": {
-            "get": {
-                "operationId": "b5fdc32df37ea06ec4f0fdc939d25d0f",
+            },
+            "delete": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Delete a guild",
+                "operationId": "e568a63b4fb69e11a0fa8dea022befe2",
                 "responses": {
                     "200": {
                         "description": "Successful operation"
                     },
+                    "400": {
+                        "description": "Bad Request"
+                    },
                     "401": {
                         "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds/inviteCode/{guild}": {
+            "get": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Get invite code of a guild",
+                "operationId": "90cfb071a3d91560bf891e065e66271c",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds/entry": {
+            "post": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Enter into a guild by invite code",
+                "operationId": "4bb8c21867da8a48cacd40e134a6d5e0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "invite_code"
+                                ],
+                                "properties": {
+                                    "invite_code": {
+                                        "description": "Invite code",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
                     }
                 }
             }
