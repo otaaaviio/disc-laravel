@@ -2,6 +2,9 @@
 
 namespace App\Http\Services;
 
+use App\Events\UserJoinedChannel;
+use App\Exceptions\ChannelException;
+use App\Exceptions\GuildException;
 use App\Http\Resources\ChannelResource;
 use App\interfaces\Repositories\IChannelRepository;
 use App\interfaces\Services\IChannelService;
@@ -46,5 +49,24 @@ class ChannelService implements IChannelService
     {
         $user_id = auth()->id();
         $this->channelRepository->delete($guild->id, $user_id, $channel);
+    }
+
+    /**
+     * @throws GuildException
+     * @throws ChannelException
+     */
+    public function joinChannel(Guild $guild, Channel $channel): void
+    {
+        $user = auth()->user();
+
+        if (! $guild->channels->contains($channel)) {
+            throw ChannelException::channelDoesNotBelongToGuild();
+        }
+
+        if (! $guild->members->contains($user)) {
+            throw GuildException::notAGuildMemberException();
+        }
+
+        event(new UserJoinedChannel($channel, $user->name));
     }
 }

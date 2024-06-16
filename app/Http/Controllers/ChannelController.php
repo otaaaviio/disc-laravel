@@ -20,6 +20,25 @@ class ChannelController extends Controller
         $this->channelService = $channelService;
     }
 
+    #[OA\Get(
+        path: '/api/guilds/{guild}/channels/{channel}',
+        summary: 'Join a channel',
+        tags: ['Authenticated'],
+        responses: [
+            new OA\Response(response: StatusCode::HTTP_OK, description: 'Successful operation'),
+            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: 'Unauthorized'),
+            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
+        ]
+    )]
+    public function join(Guild $guild, Channel $channel): JsonResponse
+    {
+        $this->channelService->joinChannel($guild, $channel);
+
+        return response()->json([
+            'message' => 'Successfully joined channel '.$channel->name,
+        ], StatusCode::HTTP_OK);
+    }
+
     #[OA\Post(
         path: '/api/guilds/{guild}/channels',
         summary: 'Create a new channel in a guild',

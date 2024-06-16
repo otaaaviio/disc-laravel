@@ -5,11 +5,10 @@ use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Illuminate\Foundation\Testing\WithFaker;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 use Tests\TestCase;
 
-uses(TestCase::class, DatabaseTransactions::class, WithFaker::class);
+uses(TestCase::class, DatabaseTransactions::class);
 
 uses()->group('Channel Test');
 
@@ -85,4 +84,21 @@ test('cannot manage a non existing channel', function () {
             'name' => 'Channel Test',
         ])
         ->assertStatus(StatusCode::HTTP_NOT_FOUND);
+});
+
+test('should join a channel', function () {
+    $user = User::factory()->create();
+    $guild = Guild::factory()->create();
+    $guild->members()->attach($user->id, ['role' => Role::Member]);
+
+    $channel = Channel::factory()->create([
+        'guild_id' => $guild->id,
+    ]);
+
+    $this->actingAs($user)
+        ->getJson('api/guilds/'.$guild->id.'/channels/'.$channel->id)
+        ->assertStatus(StatusCode::HTTP_OK)
+        ->assertJson([
+            'message' => 'Successfully joined channel '.$channel->name,
+        ]);
 });

@@ -163,57 +163,25 @@
                 }
             }
         },
-        "/api/guilds/{guild}/channels": {
-            "post": {
+        "/api/guilds/{guild}/channels/{channel}": {
+            "get": {
                 "tags": [
                     "Authenticated"
                 ],
-                "summary": "Create a new channel in a guild",
-                "operationId": "326c6d1bb7f614a89818250a19193a33",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "description"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "description": "Channel name",
-                                        "type": "string"
-                                    },
-                                    "description": {
-                                        "description": "Channel description",
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
+                "summary": "Join a channel",
+                "operationId": "5938cec1c8bdfe0ecbd96996ede285ec",
                 "responses": {
-                    "201": {
+                    "200": {
                         "description": "Successful operation"
-                    },
-                    "400": {
-                        "description": "Bad Request"
                     },
                     "401": {
                         "description": "Unauthorized"
-                    },
-                    "403": {
-                        "description": "Forbidden"
                     },
                     "500": {
                         "description": "Server Error"
                     }
                 }
-            }
-        },
-        "/api/guilds/{guild}/channels/{channel}": {
+            },
             "put": {
                 "tags": [
                     "Authenticated"
@@ -266,6 +234,56 @@
                 "operationId": "f7bb2574776b5560a6fc7ece260ade97",
                 "responses": {
                     "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds/{guild}/channels": {
+            "post": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Create a new channel in a guild",
+                "operationId": "326c6d1bb7f614a89818250a19193a33",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "description": "Channel name",
+                                        "type": "string"
+                                    },
+                                    "description": {
+                                        "description": "Channel description",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
                         "description": "Successful operation"
                     },
                     "400": {
@@ -520,6 +538,71 @@
                         }
                     }
                 },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds/{guild}/channels/{channel}/messages": {
+            "post": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Send a message to a channel",
+                "operationId": "0b4dfd2f24ca41cacf2932f0689cf522",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "content"
+                                ],
+                                "properties": {
+                                    "content": {
+                                        "description": "Message content",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Successful operation"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    },
+                    "500": {
+                        "description": "Server Error"
+                    }
+                }
+            }
+        },
+        "/api/guilds/{guild}/channels/{channel}/messages/{message}": {
+            "delete": {
+                "tags": [
+                    "Authenticated"
+                ],
+                "summary": "Delete a message from a channel",
+                "operationId": "860cd38395d41a69438d4ef894044bbf",
                 "responses": {
                     "200": {
                         "description": "Successful operation"

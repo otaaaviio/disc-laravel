@@ -7,25 +7,17 @@ use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 use Throwable;
 
-class ChannelException extends Exception
+class MessageException extends Exception
 {
     public function __construct($message = '', $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, StatusCode::HTTP_UNAUTHORIZED, $previous);
     }
 
-    public static function dontHaveManagerPermission(): self
+    public static function dontHavePermissionToDeleteMessage(): self
     {
         return new self(
-            'You are not allowed to manager this channel',
-            StatusCode::HTTP_UNAUTHORIZED
-        );
-    }
-
-    public static function channelDoesNotBelongToGuild(): self
-    {
-        return new self(
-            'The specified channel does not belong to the provided guild',
+            'You do not have permission to delete this message',
             StatusCode::HTTP_UNAUTHORIZED
         );
     }
