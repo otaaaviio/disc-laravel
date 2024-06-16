@@ -29,7 +29,7 @@ class GuildService implements IGuildService
 
     public function index(): AnonymousResourceCollection
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $guilds = $this->guildRepository->getGuildsByUserId($user_id);
 
         return GuildResource::collection($guilds);
@@ -40,7 +40,7 @@ class GuildService implements IGuildService
      */
     public function show(Guild $guild): GuildDetailedResource
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $guild = $this->guildRepository->getGuild($guild, $user_id);
 
         if (! $guild) {
@@ -61,14 +61,14 @@ class GuildService implements IGuildService
 
     public function getInviteCode(Guild $guild): string
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
 
         return $this->guildRepository->getInviteCode($guild, $user_id);
     }
 
     public function entryByInviteCode(string $invite_code): GuildResource
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $guild = $this->guildRepository->entryByInviteCode($invite_code, $user_id);
 
         return GuildResource::make($guild);
@@ -76,7 +76,7 @@ class GuildService implements IGuildService
 
     private function create(array $data): GuildResource
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $guild = $this->guildRepository->create($data, $user_id);
 
         return GuildResource::make($guild);
@@ -84,7 +84,7 @@ class GuildService implements IGuildService
 
     private function update(Guild $guild, array $data): GuildResource
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $updated_guild = $this->guildRepository->update($guild, $data, $user_id);
 
         return GuildResource::make($updated_guild);
@@ -95,7 +95,7 @@ class GuildService implements IGuildService
      */
     public function delete(Guild $guild): void
     {
-        $user_id = auth()->user()->id;
+        $user_id = auth()->id();
         $this->guildRepository->delete($guild, $user_id);
     }
 }
