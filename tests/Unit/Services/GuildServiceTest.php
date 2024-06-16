@@ -39,9 +39,7 @@ test('should create a guild', function () {
     $this->actingAs($this->user);
 
     $guildService = new GuildService($mockGuildRepository);
-    $res = $guildService->upsertGuild([
-        'data'
-    ]);
+    $res = $guildService->upsertGuild(['data']);
 
     $this->assertEquals('test', $res->name);
     $this->assertEquals('test description', $res->description);

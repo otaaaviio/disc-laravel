@@ -76,7 +76,7 @@ class GuildController extends Controller
         summary: "Update a guild",
         requestBody: new OA\RequestBody(required: true,
             content: new OA\MediaType(mediaType: "application/json",
-                schema: new OA\Schema(required: [],
+                schema: new OA\Schema(
                     properties: [
                         new OA\Property(property: 'name', description: "Guild name", type: "string"),
                         new OA\Property(property: 'description', description: "Guild description", type: "string"),

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChannelController;
 use App\Http\Controllers\GuildController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
@@ -21,5 +22,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/user', [AuthController::class, 'getUserAuthenticated']);
     });
+    Route::prefix('/guilds/{guild}/channels')->group(function () {
+        Route::post('/', [ChannelController::class, 'store']);
+        Route::put('/{channel}', [ChannelController::class, 'update']);
+        Route::delete('/{channel}', [ChannelController::class, 'destroy']);
+    });
 });
-

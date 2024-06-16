@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Barryvdh\LaravelIdeHelper\Eloquent;
 use Database\Factories\ChannelFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -38,7 +39,8 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Channel whereUpdatedAt($value)
  * @method static Builder|Channel withTrashed()
  * @method static Builder|Channel withoutTrashed()
- * @mixin \Eloquent
+ * @method static create(array $data)
+ * @mixin Eloquent
  */
 class Channel extends Model
 {
