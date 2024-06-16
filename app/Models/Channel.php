@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- *
  * @property int $id
  * @property string $name
  * @property string|null $description
@@ -25,6 +24,7 @@ use Illuminate\Support\Carbon;
  * @property-read Guild $guild
  * @property-read Collection<int, Message> $messages
  * @property-read int|null $messages_count
+ *
  * @method static ChannelFactory factory($count = null, $state = [])
  * @method static Builder|Channel newModelQuery()
  * @method static Builder|Channel newQuery()
@@ -40,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Channel withTrashed()
  * @method static Builder|Channel withoutTrashed()
  * @method static create(array $data)
+ *
  * @mixin Eloquent
  */
 class Channel extends Model

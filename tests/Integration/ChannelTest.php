@@ -6,8 +6,8 @@ use App\Models\Guild;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class, WithFaker::class);
 
@@ -19,7 +19,7 @@ test('should register a new channel in a existing guild', function () {
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
 
     $this->actingAs($user)
-        ->postJson('api/guilds/' . $guild->id . '/channels', [
+        ->postJson('api/guilds/'.$guild->id.'/channels', [
             'name' => 'Channel Test',
             'description' => 'Channel Description',
         ])
@@ -29,8 +29,8 @@ test('should register a new channel in a existing guild', function () {
             'channel' => [
                 'id',
                 'name',
-                'description'
-            ]
+                'description',
+            ],
         ]);
 });
 
@@ -43,7 +43,7 @@ test('should att a channel', function () {
     ]);
 
     $this->actingAs($user)
-        ->putJson('api/guilds/' . $guild->id . '/channels/' . $channel->id, [
+        ->putJson('api/guilds/'.$guild->id.'/channels/'.$channel->id, [
             'name' => 'Channel Test',
             'description' => 'Channel Description',
         ])
@@ -53,8 +53,8 @@ test('should att a channel', function () {
             'channel' => [
                 'id',
                 'name',
-                'description'
-            ]
+                'description',
+            ],
         ]);
 });
 
@@ -67,7 +67,7 @@ test('should delete a channel', function () {
     ]);
 
     $this->actingAs($user)
-        ->deleteJson('api/guilds/' . $guild->id . '/channels/' . $channel->id, [
+        ->deleteJson('api/guilds/'.$guild->id.'/channels/'.$channel->id, [
             'name' => 'Channel Test',
             'description' => 'Channel Description',
         ])
@@ -81,7 +81,7 @@ test('cannot manage a non existing channel', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user)
-        ->deleteJson('api/guilds/' . 99999 . '/channels/' . 99999, [
+        ->deleteJson('api/guilds/'. 99999 .'/channels/'. 99999, [
             'name' => 'Channel Test',
         ])
         ->assertStatus(StatusCode::HTTP_NOT_FOUND);

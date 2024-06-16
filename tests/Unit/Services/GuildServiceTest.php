@@ -17,9 +17,9 @@ uses(TestCase::class, DatabaseTransactions::class);
 uses()->group('GuildService Test');
 
 beforeEach(function () {
-    if (!isset($this->user)) {
+    if (! isset($this->user)) {
         $this->user = User::factory()->create([
-            'is_super_admin' => true
+            'is_super_admin' => true,
         ]);
     }
 });
@@ -32,7 +32,7 @@ test('should create a guild', function () {
             ->andReturn(new Guild([
                 'name' => 'test',
                 'description' => 'test description',
-                'icon_url' => 'test icon url'
+                'icon_url' => 'test icon url',
             ]));
     });
 
@@ -56,7 +56,7 @@ test('should update a guild', function () {
             ->andReturn(new Guild([
                 'name' => 'test updated',
                 'description' => 'test description updated',
-                'icon_url' => 'test icon url updated'
+                'icon_url' => 'test icon url updated',
             ]));
     });
 
@@ -114,7 +114,7 @@ test('should entry by invite code into a guild', function () {
             ->andReturn(new Guild([
                 'name' => 'test',
                 'description' => 'test description',
-                'icon_url' => 'test icon url'
+                'icon_url' => 'test icon url',
             ]));
     });
 
@@ -138,7 +138,7 @@ test('should show a guild', function () {
             ->andReturn(new Guild([
                 'name' => 'test',
                 'description' => 'test description',
-                'icon_url' => 'test icon url'
+                'icon_url' => 'test icon url',
             ]));
     });
 
@@ -160,8 +160,8 @@ test('should get all guilds', function () {
                 new Guild([
                     'name' => 'test',
                     'description' => 'test description',
-                    'icon_url' => 'test icon url'
-                ])
+                    'icon_url' => 'test icon url',
+                ]),
             ]));
     });
 
@@ -182,8 +182,8 @@ test('should get all guilds by user id', function () {
                 new Guild([
                     'name' => 'test',
                     'description' => 'test description',
-                    'icon_url' => 'test icon url'
-                ])
+                    'icon_url' => 'test icon url',
+                ]),
             ]));
     });
 
@@ -207,7 +207,7 @@ test('should return a detailed guild resource', function () {
             ->andReturn(new Guild([
                 'name' => 'test',
                 'description' => 'test description',
-                'icon_url' => 'test icon url'
+                'icon_url' => 'test icon url',
             ]));
     });
 

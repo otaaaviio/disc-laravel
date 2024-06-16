@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- *
  * @property int $id
  * @property string $name
  * @property string|null $description
@@ -26,6 +25,7 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $channels_count
  * @property-read Collection<int, User> $members
  * @property-read int|null $members_count
+ *
  * @method static GuildFactory factory($count = null, $state = [])
  * @method static Builder|Guild newModelQuery()
  * @method static Builder|Guild newQuery()
@@ -45,6 +45,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Guild whereInviteCode($value)
  * @method static where(string $column, mixed $value)
  * @method static create(array $data)
+ *
  * @mixin \Eloquent
  */
 class Guild extends Model

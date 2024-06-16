@@ -17,7 +17,7 @@ uses()->group('AuthService Test');
 test('test register a user', function () {
     $mockUserRepository = $this->mock(IUserRepository::class, function (MockInterface $mock) {
         $user = Mockery::mock(User::class);
-        $user->shouldReceive('createToken')->andReturn((object)['plainTextToken' => 'token']);
+        $user->shouldReceive('createToken')->andReturn((object) ['plainTextToken' => 'token']);
 
         $mock->shouldReceive('create')
             ->once()

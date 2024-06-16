@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
 /**
- *
  * @property int $id
  * @property int $channel_id
  * @property int $user_id
@@ -21,6 +20,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  * @property-read Channel $channel
  * @property-read User $user
+ *
  * @method static MessageFactory factory($count = null, $state = [])
  * @method static Builder|Message newModelQuery()
  * @method static Builder|Message newQuery()
@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Message whereUserId($value)
  * @method static Builder|Message withTrashed()
  * @method static Builder|Message withoutTrashed()
+ *
  * @mixin \Eloquent
  */
 class Message extends Model

@@ -16,5 +16,4 @@ interface IBaseRepository
     public function update(Model $model, array $data): Model;
 
     public function delete(int $id): bool;
-
 }

@@ -23,6 +23,7 @@ class GuildService implements IGuildService
     public function getAllGuilds(): AnonymousResourceCollection
     {
         $guild = $this->guildRepository->all();
+
         return GuildResource::collection($guild);
     }
 
@@ -30,6 +31,7 @@ class GuildService implements IGuildService
     {
         $user_id = auth()->user()->id;
         $guilds = $this->guildRepository->getGuildsByUserId($user_id);
+
         return GuildResource::collection($guilds);
     }
 
@@ -41,22 +43,26 @@ class GuildService implements IGuildService
         $user_id = auth()->user()->id;
         $guild = $this->guildRepository->getGuild($guild, $user_id);
 
-        if(!$guild)
+        if (! $guild) {
             throw GuildException::notFound();
+        }
 
         return GuildDetailedResource::make($guild);
     }
 
-    public function upsertGuild(array $data, Guild $guild = null): GuildResource
+    public function upsertGuild(array $data, ?Guild $guild = null): GuildResource
     {
-        if (!$guild)
+        if (! $guild) {
             return $this->create($data);
+        }
+
         return $this->update($guild, $data);
     }
 
     public function getInviteCode(Guild $guild): string
     {
         $user_id = auth()->user()->id;
+
         return $this->guildRepository->getInviteCode($guild, $user_id);
     }
 
@@ -64,6 +70,7 @@ class GuildService implements IGuildService
     {
         $user_id = auth()->user()->id;
         $guild = $this->guildRepository->entryByInviteCode($invite_code, $user_id);
+
         return GuildResource::make($guild);
     }
 
@@ -71,6 +78,7 @@ class GuildService implements IGuildService
     {
         $user_id = auth()->user()->id;
         $guild = $this->guildRepository->create($data, $user_id);
+
         return GuildResource::make($guild);
     }
 
@@ -78,6 +86,7 @@ class GuildService implements IGuildService
     {
         $user_id = auth()->user()->id;
         $updated_guild = $this->guildRepository->update($guild, $data, $user_id);
+
         return GuildResource::make($updated_guild);
     }
 

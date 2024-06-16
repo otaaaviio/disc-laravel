@@ -3,8 +3,8 @@
 namespace App\Http\Repositories;
 
 use App\interfaces\Repositories\IBaseRepository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Throwable;
 
 abstract class BaseRepository implements IBaseRepository
@@ -37,6 +37,7 @@ abstract class BaseRepository implements IBaseRepository
     public function update(Model $model, array $data): Model
     {
         $model->update($data);
+
         return $model;
     }
 

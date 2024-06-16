@@ -15,7 +15,7 @@ interface IGuildService
 
     public function show(Guild $guild): GuildDetailedResource;
 
-    public function upsertGuild(array $data, Guild $guild = null): GuildResource;
+    public function upsertGuild(array $data, ?Guild $guild = null): GuildResource;
 
     public function getInviteCode(Guild $guild): string;
 

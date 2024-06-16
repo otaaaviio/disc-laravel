@@ -8,7 +8,7 @@ use App\Models\Guild;
 
 interface IChannelService
 {
-    public function upsert(array $data, Guild $guild, Channel $channel = null): ChannelResource;
+    public function upsert(array $data, Guild $guild, ?Channel $channel = null): ChannelResource;
 
     public function delete(Guild $guild, Channel $channel): void;
 }

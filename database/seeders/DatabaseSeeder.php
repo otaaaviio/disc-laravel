@@ -7,7 +7,6 @@ use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\Message;
 use App\Models\User;
-
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder

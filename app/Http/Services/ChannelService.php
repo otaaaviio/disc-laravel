@@ -17,10 +17,12 @@ class ChannelService implements IChannelService
         $this->channelRepository = $channelRepository;
     }
 
-    public function upsert(array $data, Guild $guild, Channel $channel = null): ChannelResource
+    public function upsert(array $data, Guild $guild, ?Channel $channel = null): ChannelResource
     {
-        if (!$channel)
+        if (! $channel) {
             return $this->store($data, $guild);
+        }
+
         return $this->update($data, $guild, $channel);
     }
 

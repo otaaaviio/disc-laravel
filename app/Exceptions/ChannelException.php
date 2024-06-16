@@ -4,12 +4,12 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Throwable;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Throwable;
 
 class ChannelException extends Exception
 {
-    public function __construct($message = "", $code = 0, Throwable $previous = null)
+    public function __construct($message = '', $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, StatusCode::HTTP_UNAUTHORIZED, $previous);
     }

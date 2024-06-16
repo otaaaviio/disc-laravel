@@ -86,9 +86,9 @@ test('test register', function () {
                 'user' => [
                     'id' => 1,
                     'name' => 'test',
-                    'email' => 'newtest@example.com'
+                    'email' => 'newtest@example.com',
                 ],
-                'token' => 'token'
+                'token' => 'token',
             ]);
     });
 

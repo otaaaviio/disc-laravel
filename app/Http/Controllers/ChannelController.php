@@ -8,8 +8,8 @@ use App\interfaces\Services\IChannelService;
 use App\Models\Channel;
 use App\Models\Guild;
 use Illuminate\Http\JsonResponse;
-use Symfony\Component\HttpFoundation\Response as StatusCode;
 use OpenApi\Attributes as OA;
+use Symfony\Component\HttpFoundation\Response as StatusCode;
 
 class ChannelController extends Controller
 {
@@ -21,22 +21,22 @@ class ChannelController extends Controller
     }
 
     #[OA\Post(
-        path: "/api/guilds/{guild}/channels",
-        summary: "Create a new channel in a guild",
+        path: '/api/guilds/{guild}/channels',
+        summary: 'Create a new channel in a guild',
         requestBody: new OA\RequestBody(required: true,
-            content: new OA\MediaType(mediaType: "application/json",
-                schema: new OA\Schema(required: ["name", "description"],
+            content: new OA\MediaType(mediaType: 'application/json',
+                schema: new OA\Schema(required: ['name', 'description'],
                     properties: [
-                        new OA\Property(property: 'name', description: "Channel name", type: "string"),
-                        new OA\Property(property: 'description', description: "Channel description", type: "string")]
+                        new OA\Property(property: 'name', description: 'Channel name', type: 'string'),
+                        new OA\Property(property: 'description', description: 'Channel description', type: 'string')]
                 ))),
-        tags: ["Authenticated"],
+        tags: ['Authenticated'],
         responses: [
-            new OA\Response(response: StatusCode::HTTP_CREATED, description: "Successful operation"),
-            new OA\Response(response: StatusCode::HTTP_BAD_REQUEST, description: "Bad Request"),
-            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: "Unauthorized"),
-            new OA\Response(response: StatusCode::HTTP_FORBIDDEN, description: "Forbidden"),
-            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: "Server Error")
+            new OA\Response(response: StatusCode::HTTP_CREATED, description: 'Successful operation'),
+            new OA\Response(response: StatusCode::HTTP_BAD_REQUEST, description: 'Bad Request'),
+            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: 'Unauthorized'),
+            new OA\Response(response: StatusCode::HTTP_FORBIDDEN, description: 'Forbidden'),
+            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
         ]
     )]
     public function store(Guild $guild, StoreChannelRequest $request): JsonResponse
@@ -46,28 +46,28 @@ class ChannelController extends Controller
         $channelResource = $this->channelService->upsert($data, $guild);
 
         return response()->json([
-            'message' => 'Channel successfully created in guild ' . $guild->name,
-            'channel' => $channelResource
+            'message' => 'Channel successfully created in guild '.$guild->name,
+            'channel' => $channelResource,
         ], StatusCode::HTTP_CREATED);
     }
 
     #[OA\Put(
-        path: "/api/guilds/{guild}/channels/{channel}",
-        summary: "Update a channel in a guild",
+        path: '/api/guilds/{guild}/channels/{channel}',
+        summary: 'Update a channel in a guild',
         requestBody: new OA\RequestBody(required: true,
-            content: new OA\MediaType(mediaType: "application/json",
+            content: new OA\MediaType(mediaType: 'application/json',
                 schema: new OA\Schema(
                     properties: [
-                        new OA\Property(property: 'name', description: "Channel name", type: "string"),
-                        new OA\Property(property: 'description', description: "Channel description", type: "string")]
+                        new OA\Property(property: 'name', description: 'Channel name', type: 'string'),
+                        new OA\Property(property: 'description', description: 'Channel description', type: 'string')]
                 ))),
-        tags: ["Authenticated"],
+        tags: ['Authenticated'],
         responses: [
-            new OA\Response(response: StatusCode::HTTP_OK, description: "Successful operation"),
-            new OA\Response(response: StatusCode::HTTP_BAD_REQUEST, description: "Bad Request"),
-            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: "Unauthorized"),
-            new OA\Response(response: StatusCode::HTTP_FORBIDDEN, description: "Forbidden"),
-            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: "Server Error")
+            new OA\Response(response: StatusCode::HTTP_OK, description: 'Successful operation'),
+            new OA\Response(response: StatusCode::HTTP_BAD_REQUEST, description: 'Bad Request'),
+            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: 'Unauthorized'),
+            new OA\Response(response: StatusCode::HTTP_FORBIDDEN, description: 'Forbidden'),
+            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
         ]
     )]
     public function update(Guild $guild, Channel $channel, UpdateChannelRequest $request): JsonResponse
@@ -78,20 +78,20 @@ class ChannelController extends Controller
 
         return response()->json([
             'message' => 'Channel successfully updated',
-            'channel' => $channelResource
+            'channel' => $channelResource,
         ], StatusCode::HTTP_OK);
     }
 
     #[OA\Delete(
-        path: "/api/guilds/{guild}/channels/{channel}",
-        summary: "Delete a channel in a guild",
-        tags: ["Authenticated"],
+        path: '/api/guilds/{guild}/channels/{channel}',
+        summary: 'Delete a channel in a guild',
+        tags: ['Authenticated'],
         responses: [
-            new OA\Response(response: StatusCode::HTTP_OK, description: "Successful operation"),
-            new OA\Response(response: StatusCode::HTTP_BAD_REQUEST, description: "Bad Request"),
-            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: "Unauthorized"),
-            new OA\Response(response: StatusCode::HTTP_FORBIDDEN, description: "Forbidden"),
-            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: "Server Error")
+            new OA\Response(response: StatusCode::HTTP_OK, description: 'Successful operation'),
+            new OA\Response(response: StatusCode::HTTP_BAD_REQUEST, description: 'Bad Request'),
+            new OA\Response(response: StatusCode::HTTP_UNAUTHORIZED, description: 'Unauthorized'),
+            new OA\Response(response: StatusCode::HTTP_FORBIDDEN, description: 'Forbidden'),
+            new OA\Response(response: StatusCode::HTTP_INTERNAL_SERVER_ERROR, description: 'Server Error'),
         ]
     )]
     public function destroy(Guild $guild, Channel $channel): JsonResponse

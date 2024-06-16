@@ -22,7 +22,7 @@ class AuthService implements IAuthService
      */
     public function login(array $credentials): string
     {
-        if (!Auth::attempt($credentials)) {
+        if (! Auth::attempt($credentials)) {
             throw AuthException::invalidCredentials();
         }
 
@@ -44,7 +44,7 @@ class AuthService implements IAuthService
 
         return [
             'token' => $token,
-            'user' => AuthResource::make($user)
+            'user' => AuthResource::make($user),
         ];
     }
 

@@ -22,8 +22,8 @@ class GuildFactory extends Factory
     public function configure(): GuildFactory
     {
         return $this->afterCreating(function (Guild $guild) {
-            $guild->name = 'Guild ' . $guild->id;
-            $guild->invite_code = $this->getInviteCode() . $guild->id;
+            $guild->name = 'Guild '.$guild->id;
+            $guild->invite_code = $this->getInviteCode().$guild->id;
             $guild->save();
         });
     }

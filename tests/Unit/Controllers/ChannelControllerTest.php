@@ -17,7 +17,7 @@ uses()->group('ChannelController Test');
 test('test delete', function () {
     $channel = Channel::factory()->make();
     $guild = Guild::factory()->make();
-    $mockChannelService = $this->mock(IChannelService::class, function (MockInterface $mock) use($channel, $guild) {
+    $mockChannelService = $this->mock(IChannelService::class, function (MockInterface $mock) use ($channel, $guild) {
         $mock->shouldReceive('delete')->once()->with($guild, $channel);
     });
 

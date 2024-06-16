@@ -51,7 +51,8 @@ class ChannelRepository implements IChannelRepository
     private function checkPermissions(int $guild_id, int $user_id): void
     {
         $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
-        if (!$guild_member || ($guild_member->role !== Role::Admin->value && $guild_member->role !== Role::Moderator->value))
+        if (! $guild_member || ($guild_member->role !== Role::Admin->value && $guild_member->role !== Role::Moderator->value)) {
             throw ChannelException::dontHaveManagerPermission();
+        }
     }
 }

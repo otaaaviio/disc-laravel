@@ -25,8 +25,9 @@ class GuildRepository implements IGuildRepository
             $query->where('user_id', $user_id);
         })->get();
 
-        if ($guilds->isEmpty())
+        if ($guilds->isEmpty()) {
             throw GuildException::dontHaveGuildsToShow();
+        }
 
         return $guilds;
     }
@@ -44,8 +45,9 @@ class GuildRepository implements IGuildRepository
     public function getInviteCode(Guild $guild, int $user_id): string
     {
         $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild->id)->first();
-        if (!$guild_member)
+        if (! $guild_member) {
             throw GuildException::notAGuildMemberException();
+        }
 
         return $guild->invite_code;
     }
@@ -56,10 +58,12 @@ class GuildRepository implements IGuildRepository
     public function entryByInviteCode(string $invite_code, int $user_id): Guild
     {
         $guild = Guild::where('invite_code', $invite_code)->first();
-        if (!$guild)
+        if (! $guild) {
             throw GuildException::invalidInviteCode();
+        }
 
         $guild->members()->attach($user_id, ['role' => Role::Member]);
+
         return $guild;
     }
 
@@ -67,6 +71,7 @@ class GuildRepository implements IGuildRepository
     {
         $guild = Guild::create($data);
         $guild->members()->attach($user_id, ['role' => Role::Admin]);
+
         return $guild;
     }
 
@@ -78,6 +83,7 @@ class GuildRepository implements IGuildRepository
         $this->checkManagerPermission($guild->id, $user_id);
 
         $guild->update($data);
+
         return $guild;
     }
 
@@ -97,7 +103,8 @@ class GuildRepository implements IGuildRepository
     private function checkManagerPermission(int $guild_id, int $user_id): void
     {
         $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
-        if (!$guild_member || $guild_member->role !== Role::Admin->value)
+        if (! $guild_member || $guild_member->role !== Role::Admin->value) {
             throw GuildException::dontHaveManagerPermission();
+        }
     }
 }

@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Exceptions\GuildException;
 use App\Http\Controllers\GuildController;
 use App\Http\Resources\GuildDetailedResource;
@@ -8,9 +7,9 @@ use App\Http\Resources\GuildResource;
 use App\interfaces\Services\IGuildService;
 use App\Models\Guild;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Foundation\Testing\TestCase;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Foundation\Testing\TestCase;
 use Mockery\MockInterface;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
@@ -128,7 +127,7 @@ test('should entry into a guild', function () {
             'description' => $guild->description,
             'icon_url' => $guild->icon_url,
         ],
-        'message' => 'Successfully entered into the guild'
+        'message' => 'Successfully entered into the guild',
     ], json_decode($res->getContent(), true));
 });
 

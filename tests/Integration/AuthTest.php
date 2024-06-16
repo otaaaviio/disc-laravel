@@ -5,8 +5,8 @@ namespace Tests\Integration;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
+use Tests\TestCase;
 
 uses(TestCase::class, DatabaseTransactions::class, WithFaker::class);
 

@@ -23,7 +23,7 @@ class ChannelFactory extends Factory
     public function configure(): ChannelFactory
     {
         return $this->afterCreating(function (Channel $channel) {
-            $channel->name = 'Channel ' . $channel->id;
+            $channel->name = 'Channel '.$channel->id;
             $channel->save();
         });
     }

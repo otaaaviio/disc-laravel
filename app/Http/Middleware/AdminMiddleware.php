@@ -17,6 +17,7 @@ class AdminMiddleware
         if (auth()->user()->is_super_admin === false) {
             throw AuthException::unauthorized();
         }
+
         return $next($request);
     }
 }
