@@ -2,38 +2,38 @@
 
 namespace App\Events;
 
-use App\Models\Channel;
+use App\Models\User;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserJoinedChannel implements ShouldBroadcastNow
+class UserJoinedChannel implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected Channel $channel;
+    protected int $channel_id;
+    protected User $user;
 
-    protected string $user_name;
-
-    public function __construct(Channel $channel, $user_name)
+    public function __construct(int $channel_id, User $user)
     {
-        $this->channel = $channel;
-        $this->user_name = $user_name;
+        $this->channel_id = $channel_id;
+        $this->user = $user;
     }
 
     public function broadcastOn(): array
     {
         return [
-            new PresenceChannel('channel.'.$this->channel->id),
+            new PresenceChannel('channel.'.$this->channel_id),
         ];
     }
 
     public function broadcastWith(): array
     {
         return [
-            'user_name' => $this->user_name,
+            'id' => $this->user->id,
+            'name' => $this->user->name,
         ];
     }
 

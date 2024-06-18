@@ -1,5 +1,5 @@
 <template>
-    <img alt="background" src="../assets/background.svg" type="background" class="absolute h-full w-full">
+    <img alt="background" src="../assets/images/background.svg" type="background" class="absolute h-full w-full">
 </template>
 
 <script>

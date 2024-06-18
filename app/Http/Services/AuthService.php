@@ -4,19 +4,12 @@ namespace App\Http\Services;
 
 use App\Exceptions\AuthException;
 use App\Http\Resources\AuthResource;
-use App\interfaces\Repositories\IUserRepository;
 use App\interfaces\Services\IAuthService;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class AuthService implements IAuthService
 {
-    protected IUserRepository $userRepository;
-
-    public function __construct(IUserRepository $userRepository)
-    {
-        $this->userRepository = $userRepository;
-    }
-
     /**
      * @throws AuthException
      */
@@ -29,9 +22,6 @@ class AuthService implements IAuthService
         return Auth::user()->createToken('Access Token')->plainTextToken;
     }
 
-    /**
-     * @throws AuthException
-     */
     public function logout(): void
     {
         Auth::user()->tokens()->delete();
@@ -39,7 +29,7 @@ class AuthService implements IAuthService
 
     public function register(array $data): array
     {
-        $user = $this->userRepository->create($data);
+        $user = User::create($data);
         $token = $user->createToken('Access Token')->plainTextToken;
 
         return [

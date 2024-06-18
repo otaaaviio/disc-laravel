@@ -2,6 +2,12 @@
     <form ref="form" @submit.prevent="login">
         <div class="flex flex-col gap-4">
             <input
+                v-model="formData.name"
+                type="text"
+                placeholder="Name"
+                required
+                class="p-3 rounded-lg text-black">
+            <input
                 v-model="formData.email"
                 type="email"
                 placeholder="Email"
@@ -12,48 +18,52 @@
                 type="password"
                 placeholder="Password"
                 minlength="6"
+                required
                 class="p-3 rounded-lg text-black">
-            <div class="flex">
-                <input type="checkbox" id="remember-me" v-model="formData.remember"/>
-                <label for="remember-me" class="inline-flex ml-2">Remember me</label>
-            </div>
+            <input
+                v-model="formData.password_confirmation"
+                type="password"
+                placeholder="Confirm Password"
+                minlength="6"
+                required
+                class="p-3 rounded-lg text-black">
             <button
-                @click="submitLogin"
+                @click="register"
                 class="p-3 bg-blue-500 rounded-lg w-1/2 mx-auto"
             >
-                Login
+                Register
             </button>
         </div>
     </form>
 </template>
 
 <script>
+import {toast} from "vue3-toastify";
+
 export default {
-    name: 'login-form',
+    name: 'register-form',
     data() {
         return {
             formData: {
+                name: '',
                 email: '',
                 password: '',
-                remember: false
+                password_confirmation: '',
             },
         }
     },
     methods: {
-        submitLogin() {
+        async register() {
             const valid = this.$refs.form.checkValidity();
             if (!valid) return;
 
-            this.$store.dispatch('auth/login', this.formData);
+            if (this.formData.password !== this.formData.password_confirmation) {
+                toast.error('Password and Confirm Password must be the same');
+                return;
+            }
+
+            await this.$store.dispatch('auth/register', this.formData);
         },
     },
-    mounted() {
-        if (process.env.NODE_ENV === 'development') {
-            this.formData = {
-                email: 'adm@admin.com',
-                password: 'password',
-            };
-        }
-    }
 }
 </script>

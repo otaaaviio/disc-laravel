@@ -2,24 +2,22 @@
 
 namespace App\Http\Services;
 
+use App\enums\Role;
 use App\Events\UserJoinedChannel;
 use App\Exceptions\ChannelException;
 use App\Exceptions\GuildException;
 use App\Http\Resources\ChannelResource;
-use App\interfaces\Repositories\IChannelRepository;
 use App\interfaces\Services\IChannelService;
 use App\Models\Channel;
 use App\Models\Guild;
+use App\Models\GuildMember;
+use App\Models\User;
 
 class ChannelService implements IChannelService
 {
-    protected IChannelRepository $channelRepository;
-
-    public function __construct(IChannelRepository $channelRepository)
-    {
-        $this->channelRepository = $channelRepository;
-    }
-
+    /**
+     * @throws ChannelException
+     */
     public function upsert(array $data, Guild $guild, ?Channel $channel = null): ChannelResource
     {
         if (! $channel) {
@@ -29,26 +27,41 @@ class ChannelService implements IChannelService
         return $this->update($data, $guild, $channel);
     }
 
+    /**
+     * @throws ChannelException
+     */
     private function store(array $data, Guild $guild): ChannelResource
     {
-        $user_id = auth()->id();
-        $channel = $this->channelRepository->create($data, $guild->id, $user_id);
+        $this->checkPermissions($guild->id, auth()->id());
+
+        $channel = Channel::create([
+            ...$data,
+            'guild_id' => $guild->id,
+        ]);
 
         return ChannelResource::make($channel);
     }
 
+    /**
+     * @throws ChannelException
+     */
     private function update(array $data, Guild $guild, Channel $channel): ChannelResource
     {
-        $user_id = auth()->id();
-        $channel = $this->channelRepository->update($data, $user_id, $guild->id, $channel);
+        $this->checkPermissions($guild->id, auth()->id());
+
+        $channel->update($data);
 
         return ChannelResource::make($channel);
     }
 
+    /**
+     * @throws ChannelException
+     */
     public function delete(Guild $guild, Channel $channel): void
     {
-        $user_id = auth()->id();
-        $this->channelRepository->delete($guild->id, $user_id, $channel);
+        $this->checkPermissions($guild->id, auth()->id());
+
+        $channel->delete();
     }
 
     /**
@@ -57,6 +70,7 @@ class ChannelService implements IChannelService
      */
     public function joinChannel(Guild $guild, Channel $channel): void
     {
+        /** @var User $user */
         $user = auth()->user();
 
         if (! $guild->channels->contains($channel)) {
@@ -67,6 +81,17 @@ class ChannelService implements IChannelService
             throw GuildException::notAGuildMemberException();
         }
 
-        event(new UserJoinedChannel($channel, $user->name));
+        event(new UserJoinedChannel($channel->id, $user));
+    }
+
+    /**
+     * @throws ChannelException
+     */
+    private function checkPermissions(int $guild_id, int $user_id): void
+    {
+        $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
+        if (! $guild_member || ($guild_member->role !== Role::Admin->value && $guild_member->role !== Role::Moderator->value)) {
+            throw ChannelException::dontHaveManagerPermission();
+        }
     }
 }

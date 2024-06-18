@@ -2,6 +2,7 @@
 
 namespace App\Http\Services;
 
+use App\Events\MessageDeleted;
 use App\Events\SendMessage;
 use App\Exceptions\ChannelException;
 use App\Exceptions\MessageException;
@@ -25,6 +26,7 @@ class MessageService implements IMessageService
             'user_id' => auth()->id(),
         ];
 
+        /** @var Message $message */
         $message = $channel->messages()->create($payload);
 
         event(new SendMessage($message));
@@ -45,6 +47,8 @@ class MessageService implements IMessageService
         if ($message->user_id !== $user_id) {
             throw MessageException::dontHavePermissionToDeleteMessage();
         }
+
+        event(new MessageDeleted($message));
 
         $message->delete();
     }

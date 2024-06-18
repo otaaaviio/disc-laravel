@@ -2,35 +2,37 @@
 
 namespace App\Http\Services;
 
+use App\enums\Role;
 use App\Exceptions\GuildException;
 use App\Http\Resources\GuildDetailedResource;
 use App\Http\Resources\GuildResource;
-use App\interfaces\Repositories\IGuildRepository;
 use App\interfaces\Services\IGuildService;
 use App\Models\Guild;
+use App\Models\GuildMember;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
 
 class GuildService implements IGuildService
 {
-    protected IGuildRepository $guildRepository;
-
-    public function __construct(IGuildRepository $guildRepository)
-    {
-        $this->guildRepository = $guildRepository;
-    }
-
     public function getAllGuilds(): AnonymousResourceCollection
     {
-        $guild = $this->guildRepository->all();
+        $guilds = Guild::all();
 
-        return GuildResource::collection($guild);
+        return GuildResource::collection($guilds);
     }
 
+    /**
+     * @throws GuildException
+     */
     public function index(): AnonymousResourceCollection
     {
-        $user_id = auth()->id();
-        $guilds = $this->guildRepository->getGuildsByUserId($user_id);
+        $guilds = Guild::whereHas('members', function ($query) {
+            $query->where('user_id', auth()->id());
+        })->get();
+
+        if ($guilds->isEmpty()) {
+            throw GuildException::dontHaveGuildsToShow();
+        }
 
         return GuildResource::collection($guilds);
     }
@@ -40,54 +42,78 @@ class GuildService implements IGuildService
      */
     public function show(Guild $guild): GuildDetailedResource
     {
-        $user_id = auth()->id();
-        $guild = $this->guildRepository->getGuild($guild, $user_id);
+        $guild = Guild::where('id', $guild->id)->whereHas('members', function ($query) {
+            $query->where('user_id', auth()->id());
+        })->first();
 
-        if (! $guild) {
+        if (!$guild) {
             throw GuildException::notFound();
         }
 
         return GuildDetailedResource::make($guild);
     }
 
+    /**
+     * @throws GuildException
+     */
     public function upsertGuild(array $data, ?Guild $guild = null): GuildResource
     {
-        if (! $guild) {
+        if (!$guild) {
             return $this->create($data);
         }
 
         return $this->update($guild, $data);
     }
 
+    /**
+     * @throws GuildException
+     */
     public function getInviteCode(Guild $guild): string
     {
-        $user_id = auth()->id();
+        $guild_member = GuildMember::where('user_id', auth()->id())
+            ->where('guild_id', $guild->id)
+            ->first();
 
-        return $this->guildRepository->getInviteCode($guild, $user_id);
+        if (!$guild_member) {
+            throw GuildException::notAGuildMemberException();
+        }
+
+        return $guild->invite_code;
     }
 
+    /**
+     * @throws GuildException
+     */
     public function entryByInviteCode(string $invite_code): GuildResource
     {
-        $user_id = auth()->id();
-        $guild = $this->guildRepository->entryByInviteCode($invite_code, $user_id);
+        $guild = Guild::where('invite_code', $invite_code)->first();
+        if (!$guild) {
+            throw GuildException::invalidInviteCode();
+        }
+
+        $guild->members()->attach(auth()->id(), ['role' => Role::Member]);
 
         return GuildResource::make($guild);
     }
 
     private function create(array $data): GuildResource
     {
-        $user_id = auth()->id();
-        $guild = $this->guildRepository->create($data, $user_id);
+        $guild = Guild::create($data);
+        $guild->members()->attach(auth()->id(), ['role' => Role::Admin]);
 
         return GuildResource::make($guild);
     }
 
+    /**
+     * @throws GuildException
+     */
     private function update(Guild $guild, array $data): GuildResource
     {
-        $user_id = auth()->id();
-        $updated_guild = $this->guildRepository->update($guild, $data, $user_id);
+        $this->checkManagerPermission($guild->id, auth()->id());
 
-        return GuildResource::make($updated_guild);
+        $guild->update($data);
+
+        return GuildResource::make($guild);
     }
 
     /**
@@ -95,7 +121,16 @@ class GuildService implements IGuildService
      */
     public function delete(Guild $guild): void
     {
-        $user_id = auth()->id();
-        $this->guildRepository->delete($guild, $user_id);
+        $this->checkManagerPermission($guild->id, auth()->id());
+
+        $guild->delete();
+    }
+
+    private function checkManagerPermission(int $guild_id, int $user_id): void
+    {
+        $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
+        if (! $guild_member || $guild_member->role !== Role::Admin->value) {
+            throw GuildException::dontHaveManagerPermission();
+        }
     }
 }

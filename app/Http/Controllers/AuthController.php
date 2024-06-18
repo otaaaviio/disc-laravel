@@ -70,7 +70,7 @@ class AuthController extends Controller
 
     #[OA\Post(
         path: '/api/auth/register',
-        summary: 'Logout user',
+        summary: 'Register user',
         requestBody: new OA\RequestBody(required: true,
             content: new OA\MediaType(mediaType: 'application/json',
                 schema: new OA\Schema(required: ['name', 'email', 'password', 'password_confirmation'],

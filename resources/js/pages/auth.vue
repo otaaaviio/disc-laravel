@@ -5,7 +5,7 @@
             <header class="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
                 <div class="flex lg:justify-center lg:col-start-2">
                     <a href="/">
-                        <img src="../assets/disc-icon.svg" alt="disc-icon">
+                        <img src="../assets/images/disc-icon.svg" alt="disc-icon">
                     </a>
                 </div>
                 <nav class="-mx-3 flex flex-1 justify-end">
@@ -26,15 +26,15 @@
 <script>
 import AppFooter from "../components/app-footer.vue";
 import Background from "../components/background.vue";
-import LoginForm from "../components/login-form.vue";
-import RegisterForm from "../components/register-form.vue";
+import LoginForm from "../components/auth/login-form.vue";
+import RegisterForm from "../components/auth/register-form.vue";
 
 export default {
     components: {RegisterForm, LoginForm, Background, AppFooter},
     data() {
         return {
-            login: false,
-            option: 'login'
+            login: true,
+            option: 'register'
         }
     },
     methods: {

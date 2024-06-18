@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreChannelRequest;
 use App\Http\Requests\UpdateChannelRequest;
+use App\Http\Resources\MessageResource;
 use App\interfaces\Services\IChannelService;
 use App\Models\Channel;
 use App\Models\Guild;
@@ -36,6 +37,7 @@ class ChannelController extends Controller
 
         return response()->json([
             'message' => 'Successfully joined channel '.$channel->name,
+            'messages' => MessageResource::collection($channel->messages),
         ], StatusCode::HTTP_OK);
     }
 

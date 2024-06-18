@@ -1,8 +1,8 @@
-import "./bootstrap";
+import "./services/bootstrap.js";
 import { createApp } from "vue";
 import App from "./App.vue";
-import router from "./router.js";
-import './index.css'
+import router from "./router/router.js";
+import './assets/css/index.css'
 import store from "./stores/store.js";
 import Vue3Toastify from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
