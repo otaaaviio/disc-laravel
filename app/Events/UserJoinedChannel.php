@@ -13,13 +13,11 @@ class UserJoinedChannel implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected int $channel_id;
-    protected User $user;
-
-    public function __construct(int $channel_id, User $user)
-    {
-        $this->channel_id = $channel_id;
-        $this->user = $user;
+    public function __construct(
+        private readonly int $channel_id,
+        private readonly User $user
+    ) {
+        //
     }
 
     public function broadcastOn(): array

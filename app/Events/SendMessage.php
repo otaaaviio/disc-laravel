@@ -13,11 +13,10 @@ class SendMessage implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    protected Message $message;
-
-    public function __construct(Message $message)
-    {
-        $this->message = $message;
+    public function __construct(
+        private readonly Message $message
+    ) {
+        //
     }
 
     public function broadcastOn(): array

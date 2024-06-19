@@ -46,7 +46,7 @@ class GuildService implements IGuildService
             $query->where('user_id', auth()->id());
         })->first();
 
-        if (!$guild) {
+        if (! $guild) {
             throw GuildException::notFound();
         }
 
@@ -58,7 +58,7 @@ class GuildService implements IGuildService
      */
     public function upsertGuild(array $data, ?Guild $guild = null): GuildResource
     {
-        if (!$guild) {
+        if (! $guild) {
             return $this->create($data);
         }
 
@@ -74,7 +74,7 @@ class GuildService implements IGuildService
             ->where('guild_id', $guild->id)
             ->first();
 
-        if (!$guild_member) {
+        if (! $guild_member) {
             throw GuildException::notAGuildMemberException();
         }
 
@@ -87,7 +87,7 @@ class GuildService implements IGuildService
     public function entryByInviteCode(string $invite_code): GuildResource
     {
         $guild = Guild::where('invite_code', $invite_code)->first();
-        if (!$guild) {
+        if (! $guild) {
             throw GuildException::invalidInviteCode();
         }
 
