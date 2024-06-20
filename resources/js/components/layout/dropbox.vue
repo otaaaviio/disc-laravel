@@ -7,10 +7,14 @@
         </button>
         <div v-show="isDropdownVisible" id="dropdownHover"
              class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 mt-2 right-0">
-            <ul class="py-2 text-sm text-gray-700 flex flex-col w-full items-start"
+            <ul class="py-2 text-sm text-gray-70"
                 aria-labelledby="dropdownHoverButton">
                 <li v-for="item in items">
-                    <button @click="item.action" class="block px-4 py-2 hover:bg-gray-100 w-full">{{ item.name }}</button>
+                    <button
+                        @click="item.action"
+                        v-if="!item.disabled"
+                        class="block px-4 py-2 hover:bg-gray-100 w-full">{{ item.name }}
+                    </button>
                 </li>
             </ul>
         </div>

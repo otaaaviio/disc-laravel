@@ -6,7 +6,7 @@
 </template>
 
 <script>
-import ConfirmModal from "../utils/confirm-modal.vue";
+import ConfirmModal from "../../utils/confirm-modal.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {faTrash} from "@fortawesome/free-solid-svg-icons";
 

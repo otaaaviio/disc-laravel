@@ -35,5 +35,15 @@ export const channel = {
                         toast.error('An error occurred');
                     })
         },
+        store({rootState, dispatch}, data) {
+            api.post(`/guilds/${rootState.guilds.currentGuild.id}/channels`, data)
+                .then(() => {
+                    dispatch('guilds/show', rootState.guilds.currentGuild.id, {root: true});
+                    toast.success('Channel created');
+                })
+                .catch(() => {
+                    toast.error('An error occurred');
+                });
+        }
     },
 }

@@ -10,6 +10,14 @@ export const guilds = {
     getters: {
         getGuilds: state => state.guilds,
         getCurrentGuild: state => state.currentGuild,
+        getCurrentUserIsAdmin: (state, getters, rootState) => {
+            if (!state.currentGuild || !rootState.auth.user)
+                return false;
+
+            const AdmUser =  state.currentGuild.members.find(member => member.role === 'Admin');
+
+            return AdmUser.id === rootState.auth.user.user.id;
+        },
     },
     mutations: {
         setGuilds(state, guilds) {
@@ -62,6 +70,16 @@ export const guilds = {
                 })
                 .catch(() => {
                     toast.error('An error occurred');
+                });
+        },
+        joinViaCode({dispatch, state}, code) {
+            api.post('/guilds/entry', {invite_code: code})
+                .then(() => {
+                    dispatch('index');
+                    toast.success('Joined guild successfully');
+                })
+                .catch(() => {
+                    toast.error('Invalid code');
                 });
         }
     },
