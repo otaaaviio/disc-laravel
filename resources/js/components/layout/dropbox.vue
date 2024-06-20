@@ -1,13 +1,13 @@
 <template>
     <div class="relative inline-block">
         <button @click="toggleDropdown" id="dropdownHoverButton"
-                class="text-white px-5 py-2.5 text-center items-center"
+                class="px-5 py-2.5 text-center items-center text-white/50 hover:text-white/90"
                 type="button">
             <FontAwesomeIcon :icon="faEllipsisVertical()" :size="size"/>
         </button>
         <div v-show="isDropdownVisible" id="dropdownHover"
              class="absolute z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-44 mt-2 right-0">
-            <ul class="py-2 text-sm text-gray-700"
+            <ul class="py-2 text-sm text-gray-700 flex flex-col w-full items-start"
                 aria-labelledby="dropdownHoverButton">
                 <li v-for="item in items">
                     <button @click="item.action" class="block px-4 py-2 hover:bg-gray-100 w-full">{{ item.name }}</button>

@@ -31,7 +31,7 @@ export default {
         Default
     },
     computed: {
-        ...mapState('guilds', ['currentGuild'])
+        ...mapState('guilds', ['currentGuild']),
     },
 };
 </script>
