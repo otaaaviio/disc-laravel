@@ -28,7 +28,7 @@ export const channel = {
             if (guild_id && channel_id)
                 api.get('/guilds/' + guild_id + '/channels/' + channel_id)
                     .then((res) => {
-                        rootState.message.messages = res.data.messages.reverse();
+                        rootState.message.messages = res.data.messages;
                     })
                     .catch(() => {
                         toast.error('An error occurred');

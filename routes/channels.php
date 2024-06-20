@@ -3,4 +3,8 @@
 use App\Broadcasting\ChatChannel;
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('channel.{channelId}', ChatChannel::class);
+Broadcast::routes(['middleware' => ['auth:sanctum']]);
+
+Broadcast::channel('channel.{channel}', ChatChannel::class);
+
+

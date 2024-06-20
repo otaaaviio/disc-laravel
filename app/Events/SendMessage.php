@@ -5,11 +5,11 @@ namespace App\Events;
 use App\Models\Message;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class SendMessage implements ShouldBroadcast
+class SendMessage implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,18 +19,20 @@ class SendMessage implements ShouldBroadcast
         //
     }
 
-    public function broadcastOn(): array
+    public function broadcastOn(): PrivateChannel
     {
-        return [
-            new PrivateChannel('channel.'.$this->message->channel_id),
-        ];
+        return new PrivateChannel('channel.' . $this->message->channel_id);
     }
 
     public function broadcastWith(): array
     {
         return [
-            'message' => $this->message->content,
-            'user' => $this->message->user->name,
+            'id' => $this->message->id,
+            'content' => $this->message->content,
+            'user' => [
+                'id' => $this->message->user->id,
+                'name' => $this->message->user->name,
+            ],
             'send_at' => $this->message->created_at->format('Y-m-d H:i:s'),
         ];
     }

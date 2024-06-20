@@ -10,21 +10,21 @@ class SendMessageCommand extends Command
 {
     protected $signature = 'app:send-message-command';
 
-    protected $aliases = ['send:message'];
+    protected $aliases = ['send:msg'];
 
     protected $description = 'Command description';
 
     public function handle(): void
     {
         $message = new Message([
-            'content' => 'Hello, World!',
+            'content' => 'Hello, World 123123!',
             'user_id' => 3,
-            'channel_id' => 33,
+            'channel_id' => 97,
         ]);
 
         $message->save();
 
-        event(new SendMessage($message));
+        SendMessage::dispatch($message);
 
         $this->info('message send');
     }

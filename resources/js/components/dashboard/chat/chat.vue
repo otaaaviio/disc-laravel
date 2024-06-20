@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col h-full max-h-[calc(100vh-60px)]">
-        <div class="flex flex-col-reverse overflow-y-auto hide-scrollbar">
+        <div ref="messageContainer" class="flex flex-col overflow-y-auto hide-scrollbar">
             <message v-for="message in messages" :message="message"/>
         </div>
         <footer class="w-full p-2">
@@ -30,6 +30,12 @@ export default {
     },
     methods: {
         ...mapMutations('message', ['pushMessage']),
+        scrollToBottom() {
+            this.$nextTick(() => {
+                const container = this.$refs.messageContainer;
+                container.scrollTop = container.scrollHeight;
+            });
+        },
         async sendMessage() {
             if(this.message === '') return;
 
@@ -42,10 +48,10 @@ export default {
             immediate: true,
             handler(newChannel) {
                 if (newChannel && window.Echo) {
-                    window.Echo.channel(`chat.${newChannel.id}`)
-                        .listen('SendMessage', (res) => {
+                    window.Echo.private(`channel.${newChannel.id}`)
+                        .listen('.message', (res) => {
                             this.pushMessage(res);
-                            console.log(res);
+                            this.scrollToBottom();
                         })
                         .error((error) => {
                             console.error(error);
