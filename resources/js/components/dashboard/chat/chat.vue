@@ -6,6 +6,8 @@
         <footer class="w-full p-2 ">
             <form @submit.prevent="sendMessage" class="flex">
                 <input type="text"
+                       :disabled="!currentChannel"
+                       :class="{'btn-disabled': !currentChannel}"
                        v-model="message"
                        class="bg-bars text-white text-sm rounded-lg block w-full p-2.5 focus:ring-2 focus:outline-none focus:ring-indigo-500"
                        placeholder="Write something cool..."/>
@@ -27,6 +29,7 @@ export default {
     },
     computed: {
         ...mapState('message', ['messages']),
+        ...mapState('channel', ['currentChannel']),
     },
     methods: {
         ...mapMutations('message', ['pushMessage']),

@@ -4,7 +4,7 @@
         <div class="flex flex-col w-full leading-1.5" :class="{ 'blur': blur }">
             <div class="flex items-center space-x-2 rtl:space-x-reverse">
                 <span class="text-sm font-semibold text-white/60">{{ message.user.name }}</span>
-                <span class="text-sm font-normal text-white/50">{{ message?.sent_at }}</span>
+                <span class="text-sm font-normal text-white/50">{{ formatDate(message?.send_at) }}</span>
             </div>
             <p class="text-sm font-normal py-2 text-white/40">{{ message.content }}</p>
         </div>
@@ -31,10 +31,10 @@ export default {
         message: {
             type: Object,
             default: () => ({
-                user_name: 'nome',
-                user_avatar: 'avatar',
-                content: 'content',
-                sent_at: 'sent_at'
+                user_name: '',
+                user_avatar: '',
+                content: '',
+                send_at: ''
             })
         }
     },
@@ -49,6 +49,24 @@ export default {
 
             const first = name.charAt(0).toUpperCase();
             return 'https://via.placeholder.com/35x35.png/000?text=' + first;
+        },
+        formatDate(dateString) {
+            if (!dateString) return '';
+
+            const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' };
+            const date = new Date(dateString);
+            return new Intl.DateTimeFormat('pt-BR', options).format(date);
+
+        }
+    },
+    watch: {
+        '$store.state.channel.currentChannel': {
+            immediate: true,
+            handler() {
+                setTimeout(() => {
+                    this.blur = false;
+                }, 150)
+            }
         }
     }
 }

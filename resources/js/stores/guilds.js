@@ -20,13 +20,16 @@ export const guilds = {
         }
     },
     actions: {
-        index({commit}) {
+        index({commit, dispatch}) {
             api.get('/guilds')
                 .then((res) => {
                     commit('setGuilds', res.data.guilds);
+                    if (res.data.guilds.length > 0) {
+                        dispatch('show', res.data.guilds[0].id);
+                    }
                 })
                 .catch((err) => {
-                    if(err.response.status === 404)
+                    if (err.response.status === 404)
                         toast.warning('No guilds found, register one!');
                     else
                         toast.error('An error occurred');
@@ -41,5 +44,25 @@ export const guilds = {
                     toast.error('An error occurred');
                 })
         },
+        delete({dispatch}, id) {
+            api.delete(`/guilds/${id}`)
+                .then(() => {
+                    dispatch('index');
+                    toast.success('Guild deleted successfully');
+                })
+                .catch(() => {
+                    toast.error('An error occurred');
+                });
+        },
+        store({dispatch}, data) {
+            api.post('/guilds', data)
+                .then(() => {
+                    dispatch('index');
+                    toast.success('Guild registered successfully');
+                })
+                .catch(() => {
+                    toast.error('An error occurred');
+                });
+        }
     },
 }

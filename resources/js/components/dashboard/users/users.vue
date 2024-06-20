@@ -17,6 +17,15 @@ export default {
             default: []
         }
     },
+    methods: {
+        sortUsers() {
+            this.users.sort((a, b) => {
+                if (a.online && !b.online) return 1;
+                if (!a.online && b.online) return -1;
+                return 0;
+            });
+        }
+    },
     watch: {
         '$store.state.channel.currentChannel': {
             immediate: true,
@@ -29,16 +38,21 @@ export default {
                             users.forEach(user => {
                                 this.users.find((u) => u.id === user.id).online = true;
                             });
+
+                            this.sortUsers();
                         })
                         .joining((user) => {
                             this.users.find((u) => u.id === user.id).online = true;
+                            this.sortUsers();
                         })
                         .leaving((user) => {
                             this.users.find((u) => u.id === user.id).online = false;
+                            this.sortUsers();
                         });
                 }
             }
-        }
+        },
+
     }
 }
 </script>
