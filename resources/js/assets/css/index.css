@@ -2,6 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --primary: #081826;
+    --secundary: #091D2F;
+    --terciary: #3D8BF2;
+    --color-chat: #0c273e;
+}
+
+.bg-side-bar {
+    background-color: var(--primary);
+}
+
+.bg-bars {
+    background-color: var(--secundary);
+}
+
+.bg-primary {
+    background-color: var(--color-chat);
+}
+
+.bg-chat {
+    background-color: var(--terciary);
+}
+
 .sidebar {
     display: flex;
     flex-direction: column;

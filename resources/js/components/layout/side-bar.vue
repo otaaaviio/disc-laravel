@@ -1,5 +1,5 @@
 <template>
-    <div class="sidebar bg-black/80">
+    <div class="sidebar bg-side-bar">
         <div class="disc-icon mt-2">
             <img src="../../assets/images/disc-icon.svg" alt="disc-icon"/>
         </div>

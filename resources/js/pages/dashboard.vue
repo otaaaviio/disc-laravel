@@ -2,13 +2,13 @@
     <div class="main-content">
         <default>
             <div class="flex flex-row min-h-[calc(100%)]">
-                <div class="w-[20rem] bg-gray-500">
+                <div class="w-[20rem] bg-bars">
                     <channels :channels="currentGuild?.channels"/>
                 </div>
-                <div class="w-full bg-gray-400 flex-grow">
+                <div class="w-full bg-primary flex-grow">
                     <chat/>
                 </div>
-                <div class="w-[20rem] bg-gray-500">
+                <div class="w-[20rem] bg-bars">
                     <users :users="currentGuild?.members"/>
                 </div>
             </div>

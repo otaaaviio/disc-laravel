@@ -1,8 +1,8 @@
 <template>
     <button
         @click="submitChannel(channel)"
-        class="flex items-start gap-2.5 py-3 pl-1 border-t border-b border-white/10 hover:bg-gray-600 transition">
-        <span class="text-xl font-semibold limited-text"># {{ channel.name }}</span>
+        class="flex items-start gap-2.5 py-3 pl-1 border-t border-b border-white/10 hover:bg-gray-100/5 transition">
+        <span class="text-xl font-semibold limited-text text-white/70"># {{ channel.name }}</span>
     </button>
 </template>
 
