@@ -25,7 +25,8 @@ export default {
     },
     methods: {
         async setGuild(id) {
-            await this.$store.dispatch('guilds/show', id);
+            if(this.$store.state.guilds.currentGuild?.id !== id)
+                await this.$store.dispatch('guilds/show', id);
         }
     }
 }

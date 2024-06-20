@@ -6,22 +6,17 @@ export const message = {
     state: {
         messages: [],
     },
-    getters: {
-        getMessages: state => state.messages,
-    },
     mutations: {
-        setMessages(state, newMessages) {
-            state.messages = newMessages;
-        },
         pushMessage(state, message) {
             state.messages.push(message);
         },
-        clearMessages(state) {
-            state.messages = [];
-        }
+        deleteMessage(state, message) {
+            console.log(message);
+            state.messages = state.messages.filter(m => m.id !== message.id);
+        },
     },
     actions: {
-        store({commit, rootState, state}, message) {
+        store({rootState}, message) {
             const guild_id = rootState.guilds.currentGuild?.id;
             const channel_id = rootState.channel.currentChannel?.id;
 
@@ -33,5 +28,18 @@ export const message = {
                         toast.error('An error occurred');
                     })
         },
+        delete({rootState}, id) {
+            const guild_id = rootState.guilds.currentGuild?.id;
+            const channel_id = rootState.channel.currentChannel?.id;
+
+            if (guild_id && channel_id)
+                api.delete(`/guilds/${guild_id}/channels/${channel_id}/messages/${id}`)
+                    .then((res) => {
+                        toast.success('Message deleted successfully');
+                    })
+                    .catch(() => {
+                        toast.error('An error occurred');
+                    });
+        }
     },
 }

@@ -14,6 +14,9 @@ class ChatChannel
 
     public function join(User $user, Channel $channel): array|bool
     {
-        return $channel->guild->members->contains($user);
+        if (!$channel->guild->members->contains($user))
+            return false;
+
+        return ['id' => $user->id, 'name' => $user->name];
     }
 }

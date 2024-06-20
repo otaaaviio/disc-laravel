@@ -17,5 +17,28 @@ export default {
             default: []
         }
     },
+    watch: {
+        '$store.state.channel.currentChannel': {
+            immediate: true,
+            handler(newChannel) {
+                if (newChannel && window.Echo) {
+                    window.Echo.join(`channel.${newChannel.id}`)
+                        .here((users) => {
+                            this.users.forEach(user => user.online = false);
+
+                            users.forEach(user => {
+                                this.users.find((u) => u.id === user.id).online = true;
+                            });
+                        })
+                        .joining((user) => {
+                            this.users.find((u) => u.id === user.id).online = true;
+                        })
+                        .leaving((user) => {
+                            this.users.find((u) => u.id === user.id).online = false;
+                        });
+                }
+            }
+        }
+    }
 }
 </script>

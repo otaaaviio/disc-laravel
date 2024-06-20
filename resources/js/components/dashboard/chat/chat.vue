@@ -30,14 +30,17 @@ export default {
     },
     methods: {
         ...mapMutations('message', ['pushMessage']),
+        ...mapMutations('message', ['deleteMessage']),
         scrollToBottom() {
             this.$nextTick(() => {
                 const container = this.$refs.messageContainer;
-                container.scrollTop = container.scrollHeight;
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
             });
         },
         async sendMessage() {
-            if(this.message === '') return;
+            if (this.message === '') return;
 
             await this.$store.dispatch('message/store', this.message);
             this.message = '';
@@ -53,9 +56,9 @@ export default {
                             this.pushMessage(res);
                             this.scrollToBottom();
                         })
-                        .error((error) => {
-                            console.error(error);
-                        });
+                        .listen('.message-deleted', (msg) => {
+                            this.deleteMessage(msg);
+                        })
                 }
             }
         }

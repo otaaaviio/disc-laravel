@@ -16,13 +16,14 @@ export const channel = {
     },
     actions: {
         join({commit, rootState, state}, channel) {
+            const guild_id = rootState.guilds.currentGuild?.id;
+            const channel_id = channel.id;
+
             if(channel.id === state.currentChannel?.id) return;
 
             if (state.currentChannel)
                 window.Echo.leave(`channel.${state.currentChannel.id}`);
-            //sair do canal antes de entrar em outro
-            const guild_id = rootState.guilds.currentGuild?.id;
-            const channel_id = channel.id;
+
             commit('setChannel', channel)
 
             if (guild_id && channel_id)

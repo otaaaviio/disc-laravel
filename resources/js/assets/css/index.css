@@ -73,3 +73,7 @@
     height: 60px;
     border-radius: 50%;
 }
+
+.blur {
+    filter: blur(4px);
+}

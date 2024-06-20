@@ -3,10 +3,10 @@
         <h1 class="text-4xl ml-5 text-white">
             {{ user?.name }}
         </h1>
-        <h1 class="text-2xl ml-5 text-white/70">
+        <h1 class="text-1xl ml-5 text-white/70">
             {{ currentChannel?.name }} | {{ currentGuild?.name }}
         </h1>
-        <dropbox/>
+        <dropbox :items="menuItems" size="2x"/>
     </div>
 </template>
 
@@ -15,6 +15,14 @@ import Dropbox from './dropbox.vue';
 import {mapState} from "vuex";
 
 export default {
+    data() {
+        return {
+            menuItems: [
+                {name: 'Dashboard', action: () => {}},
+                {name: 'Log out', action: async () => await this.$store.dispatch('auth/logout')},
+            ]
+        }
+    },
     components: {
         Dropbox,
     },
