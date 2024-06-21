@@ -30,8 +30,10 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.path === '/dashboard' && !store.getters['auth/isLogged']) {
+    if (to.path === '/dashboard' && from.path !== '/login' && !store.getters['auth/isLogged']) {
         next('/login');
+    } else if (to.path === '/login' && from.path !== '/dashboard' && store.getters['auth/isLogged']) {
+        next('/dashboard');
     } else {
         next();
     }

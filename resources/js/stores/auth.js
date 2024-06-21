@@ -24,7 +24,7 @@ export const auth = {
     actions: {
         login({commit, dispatch}, user) {
             api.post('/auth/login', user)
-                .then(res => {
+                .then(async res => {
                     if (user.remember)
                         window.localStorage.setItem('token', res.data.token);
                     else
@@ -32,12 +32,13 @@ export const auth = {
 
                     dispatch('getAuthenticatedUser');
 
-                    router.push('/dashboard').then(r => {
+                    router.push('/dashboard').then(() => {
                         toast.success('Login successful');
                     });
                 })
                 .catch(err => {
-                    if (err.response.status === 401)
+                    console.log(err)
+                    if (err.response?.status === 401)
                         toast.error('Invalid credentials');
                     else
                         toast.error('An error occurred');
@@ -48,7 +49,7 @@ export const auth = {
                 .then(res => {
                     window.sessionStorage.setItem('token', res.data.token);
                     commit('setUser', res.data.user);
-                    router.push('/dashboard').then(r => {
+                    router.push('/dashboard').then(() => {
                         toast.success('Registration successful');
                     });
                 })
@@ -78,7 +79,7 @@ export const auth = {
                     window.sessionStorage.removeItem('token');
                     window.localStorage.removeItem('user');
                     commit('clearUser');
-                    router.push('/login').then(r => {
+                    router.push('/login').then(() => {
                         toast.success('Logout successful');
                     })
                 })

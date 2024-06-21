@@ -7,8 +7,11 @@
                     <img src="../assets/images/disc-icon.svg" alt="disc-icon">
                 </div>
                 <nav class="-mx-3 flex flex-1 justify-end">
+                    <div v-if="isLogged">
+                        <button class="p-4 rounded-lg" @click="redirect('/dashboard')">dashboard</button>
+                    </div>
                     <div v-if="!isLogged">
-                        <button class="p-4 rounded-lg" @click="redirect()">login</button>
+                        <button class="p-4 rounded-lg" @click="redirect('/login')">login</button>
                     </div>
                 </nav>
             </header>
@@ -39,8 +42,8 @@ export default defineComponent({
         ...mapGetters('auth', ['isLogged']),
     },
     methods: {
-        redirect() {
-            this.$router.push('/login');
+        redirect(route) {
+            this.$router.push(route);
         },
     },
 })
