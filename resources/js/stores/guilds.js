@@ -17,7 +17,7 @@ export const guilds = {
 
             const AdmUser =  state.currentGuild.members.find(member => member.role === 'Admin');
 
-            return AdmUser.id === rootState.auth.user.user.id;
+            return AdmUser?.id === rootState.auth.user.user?.id;
         },
     },
     mutations: {
@@ -58,11 +58,13 @@ export const guilds = {
                     toast.error('An error occurred');
                 })
         },
-        delete({dispatch, state}, id) {
+        delete({dispatch, state, rootState}, id) {
             api.delete(`/guilds/${id}`)
                 .then(() => {
                     dispatch('index');
                     state.currentGuild = null;
+                    if(state.guilds.length === 0)
+                        rootState.message.messages = [];
                     toast.success('Guild deleted successfully');
                 })
                 .catch(() => {
@@ -104,6 +106,18 @@ export const guilds = {
                     setTimeout(() => {
                         toast.success('Invite code copied to clipboard');
                     }, 500);
+                })
+                .catch(() => {
+                    toast.error('An error occurred');
+                });
+        },
+        leave({dispatch, state}, id) {
+            api.post(`/guilds/leave/${id}`)
+                .then(() => {
+                    dispatch('index');
+                    if(state.currentGuild.length === 0)
+                        state.currentGuild = null;
+                    toast.success('Left guild successfully');
                 })
                 .catch(() => {
                     toast.error('An error occurred');

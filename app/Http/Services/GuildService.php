@@ -129,9 +129,27 @@ class GuildService implements IGuildService
         $guild->delete();
     }
 
+    /**
+     * @throws GuildException
+     */
+    public function leaveGuild(Guild $guild): void
+    {
+        if (!$guild->members()->wherePivot('user_id', auth()->id())->exists())
+            throw GuildException::notAGuildMemberException();
+
+        if ($this->isAdmin($guild))
+            throw GuildException::adminCannotLeave();
+
+        $guild->members()->detach(auth()->id());
+    }
+
+    /**
+     * @throws GuildException
+     */
     private function checkManagerPermission(int $guild_id, int $user_id): void
     {
         $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
+
         if (!$guild_member || $guild_member->role !== Role::Admin->value) {
             throw GuildException::dontHaveManagerPermission();
         }
@@ -143,17 +161,10 @@ class GuildService implements IGuildService
         return substr(str_shuffle($characters), 0, 8);
     }
 
-    /**
-     * @throws GuildException
-     */
-    public function leaveGuild(Guild $guild): void
+    private function isAdmin(Guild $guild): bool
     {
-        if ($guild->members()->wherePivot('user_id', auth()->id())->first()->role === Role::Admin->value)
-            throw GuildException::adminCannotLeave();
+        $guildMember = $guild->members()->wherePivot('user_id', auth()->id())->first();
 
-        if (!$guild->members()->wherePivot('user_id', auth()->id())->exists())
-            throw GuildException::notAGuildMemberException();
-
-        $guild->members()->detach(auth()->id());
+        return $guildMember && $guildMember->pivot->role === Role::Admin->value;
     }
 }

@@ -6,8 +6,8 @@
         <footer class="w-full p-2 ">
             <form @submit.prevent="sendMessage" class="flex">
                 <input type="text"
-                       :disabled="!currentChannel"
-                       :class="{'btn-disabled': !currentChannel}"
+                       :disabled="disabledChat"
+                       :class="{'btn-disabled': disabledChat}"
                        v-model="message"
                        class="bg-bars text-white text-sm rounded-lg block w-full p-2.5 focus:ring-2 focus:outline-none focus:ring-indigo-500"
                        placeholder="Write something cool..."/>
@@ -30,6 +30,10 @@ export default {
     computed: {
         ...mapState('message', ['messages']),
         ...mapState('channel', ['currentChannel']),
+        ...mapState('guilds', ['currentGuild']),
+        disabledChat() {
+            return !this.currentChannel || !this.currentGuild.channels.some(channel => channel.id === this.currentChannel.id);
+        }
     },
     methods: {
         ...mapMutations('message', ['pushMessage']),

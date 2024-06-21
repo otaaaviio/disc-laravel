@@ -181,3 +181,16 @@ test('should leave a Guild', function () {
             'message',
         ]);
 });
+
+test('an admin cannot leave their Guild', function () {
+    $user = User::factory()->create();
+    $guild = Guild::factory()->create();
+    $guild->members()->attach($user->id, ['role' => Role::Admin]);
+
+    $this->actingAs($user)->postJson('/api/guilds/leave/'.$guild->id)
+        ->assertStatus(StatusCode::HTTP_UNAUTHORIZED)
+        ->assertJsonStructure([
+            'message',
+        ]);
+});
+

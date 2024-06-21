@@ -72,13 +72,11 @@ export const auth = {
                     window.localStorage.removeItem('user');
                 });
         },
-        logout({commit}) {
+        logout({dispatch}) {
             api.post('/auth/logout')
                 .then(() => {
-                    window.localStorage.removeItem('token');
-                    window.sessionStorage.removeItem('token');
-                    window.localStorage.removeItem('user');
-                    commit('clearUser');
+                    dispatch('cleanSystem');
+
                     router.push('/login').then(() => {
                         toast.success('Logout successful');
                     })
@@ -87,5 +85,14 @@ export const auth = {
                     toast.error('An error occurred');
                 });
         },
+        cleanSystem({commit, rootState}) {
+            window.localStorage.removeItem('token');
+            window.sessionStorage.removeItem('token');
+            window.localStorage.removeItem('user');
+            commit('clearUser');
+            rootState.guilds.currentGuild = null;
+            rootState.channel.currentChannel = null;
+            rootState.message.messages = [];
+        }
     }
 };

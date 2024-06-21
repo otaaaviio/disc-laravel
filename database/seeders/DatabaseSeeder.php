@@ -13,32 +13,40 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::factory()->create([
+        $admin = User::factory()->create([
             'name' => 'Adm User',
             'email' => 'adm@admin.com',
             'password' => bcrypt('password'),
             'is_super_admin' => true,
         ]);
 
-        $users = User::factory(50)->create();
-        $guilds = Guild::factory(20)->create();
+        $normal_user = User::factory()->create([
+            'name' => 'Normal User',
+            'email' => 'usr@user.com',
+            'password' => bcrypt('password'),
+            'is_super_admin' => false,
+        ]);
 
-        $channels = Channel::factory(100)
-            ->recycle($guilds)
-            ->create();
+        for ($i = 0; $i < 2; $i++) {
+            $guild = Guild::factory()->create();
+            $channels = Channel::factory(5)->recycle($guild)->create();
 
-        Message::factory(100)
-            ->recycle($channels)
-            ->recycle($users)
-            ->create();
+            if ($i == 0) {
+                $guild->members()->attach($admin->id, ['role' => Role::Admin]);
+                $guild->members()->attach($normal_user->id, ['role' => Role::Member]);
+            } else {
+                $guild->members()->attach($admin->id, ['role' => Role::Member]);
+                $guild->members()->attach($normal_user->id, ['role' => Role::Admin]);
+            }
 
-        // attach some users to guilds
-        foreach ($guilds as $guild) {
-            $usersToAttach = $users->random(rand(1, 10));
-            $userAdmin = $usersToAttach->random();
+            $users = [$admin, $normal_user];
 
-            $guild->members()->attach($usersToAttach, ['role' => Role::Member]);
-            $guild->members()->attach($userAdmin, ['role' => Role::Admin]);
+            foreach ($users as $user) {
+                Message::factory(10)
+                    ->recycle($channels)
+                    ->recycle($user)
+                    ->create();
+            }
         }
     }
 }
