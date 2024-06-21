@@ -19,6 +19,8 @@ interface IGuildService
 
     public function getInviteCode(Guild $guild): string;
 
+    public function leaveGuild(Guild $guild): void;
+
     public function entryByInviteCode(string $invite_code): GuildResource;
 
     public function delete(Guild $guild): void;

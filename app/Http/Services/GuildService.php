@@ -46,7 +46,7 @@ class GuildService implements IGuildService
             $query->where('user_id', auth()->id());
         })->first();
 
-        if (! $guild) {
+        if (!$guild) {
             throw GuildException::notFound();
         }
 
@@ -58,7 +58,7 @@ class GuildService implements IGuildService
      */
     public function upsertGuild(array $data, ?Guild $guild = null): GuildResource
     {
-        if (! $guild) {
+        if (!$guild) {
             return $this->create($data);
         }
 
@@ -74,7 +74,7 @@ class GuildService implements IGuildService
             ->where('guild_id', $guild->id)
             ->first();
 
-        if (! $guild_member) {
+        if (!$guild_member) {
             throw GuildException::notAGuildMemberException();
         }
 
@@ -87,7 +87,7 @@ class GuildService implements IGuildService
     public function entryByInviteCode(string $invite_code): GuildResource
     {
         $guild = Guild::where('invite_code', $invite_code)->first();
-        if (! $guild) {
+        if (!$guild) {
             throw GuildException::invalidInviteCode();
         }
 
@@ -99,7 +99,7 @@ class GuildService implements IGuildService
     private function create(array $data): GuildResource
     {
         $guild = Guild::create($data);
-        $guild->invite_code = $this->getRandomInviteCode().$guild->id;
+        $guild->invite_code = $this->getRandomInviteCode() . $guild->id;
         $guild->save();
 
         $guild->members()->attach(auth()->id(), ['role' => Role::Admin]);
@@ -132,7 +132,7 @@ class GuildService implements IGuildService
     private function checkManagerPermission(int $guild_id, int $user_id): void
     {
         $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
-        if (! $guild_member || $guild_member->role !== Role::Admin->value) {
+        if (!$guild_member || $guild_member->role !== Role::Admin->value) {
             throw GuildException::dontHaveManagerPermission();
         }
     }
@@ -141,5 +141,19 @@ class GuildService implements IGuildService
     {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
         return substr(str_shuffle($characters), 0, 8);
+    }
+
+    /**
+     * @throws GuildException
+     */
+    public function leaveGuild(Guild $guild): void
+    {
+        if ($guild->members()->wherePivot('user_id', auth()->id())->first()->role === Role::Admin->value)
+            throw GuildException::adminCannotLeave();
+
+        if (!$guild->members()->wherePivot('user_id', auth()->id())->exists())
+            throw GuildException::notAGuildMemberException();
+
+        $guild->members()->detach(auth()->id());
     }
 }

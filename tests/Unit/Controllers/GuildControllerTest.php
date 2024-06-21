@@ -144,3 +144,41 @@ test('should throw an exception when try destroy a guild that does not exist', f
 
     $guildController->destroy($guild);
 })->throws(GuildException::class);
+
+test('should leave a guild', function () {
+    $guild = Guild::factory()->create();
+    $mockGuildService = $this->mock(IGuildService::class, function (MockInterface $mock) use ($guild) {
+        $mock->shouldReceive('leaveGuild')
+            ->once()
+            ->with($guild);
+    });
+
+    $guildController = new GuildController($mockGuildService);
+
+    $res = $guildController->leave($guild);
+
+    $this->assertEquals(StatusCode::HTTP_OK, $res->status());
+    $this->assertEquals([
+        'message' => 'Leave Successfully',
+    ], json_decode($res->getContent(), true));
+});
+
+test('an admin cannot leave their guild', function () {
+    $guild = Guild::factory()->create();
+    $expectedErrorMessage = 'Admin cannot leave their own guild';
+
+    $mockGuildService = $this->mock(IGuildService::class, function (MockInterface $mock) use ($expectedErrorMessage, $guild) {
+        $mock->shouldReceive('leaveGuild')
+            ->once()
+            ->with($guild)
+            ->andThrow(new GuildException($expectedErrorMessage));
+    });
+
+    $guildController = new GuildController($mockGuildService);
+
+    try {
+        $guildController->leave($guild);
+    } catch (GuildException $e) {
+        $this->assertEquals($expectedErrorMessage, $e->getMessage());
+    }
+});

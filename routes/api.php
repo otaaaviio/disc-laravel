@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ->group(function () {
             Route::get('/inviteCode/{guild}', [GuildController::class, 'getInviteCode']);
             Route::post('/entry', [GuildController::class, 'entryByInviteCode']);
+            Route::post('/leave/{guild}', [GuildController::class, 'leave']);
             Route::get('/user', [GuildController::class, 'getAuthenticatedUserGuilds']);
 
             Route::prefix('/{guild}/channels')->group(function () {

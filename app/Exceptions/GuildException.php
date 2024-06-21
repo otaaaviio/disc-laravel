@@ -38,6 +38,14 @@ class GuildException extends Exception
         );
     }
 
+    public static function adminCannotLeave(): self
+    {
+        return new self(
+            'Admin cannot leave the guild',
+            StatusCode::HTTP_UNAUTHORIZED
+        );
+    }
+
     public static function notFound(): self
     {
         return new self(

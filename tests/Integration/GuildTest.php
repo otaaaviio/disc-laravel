@@ -156,7 +156,6 @@ test('should entry into a Guild', function () {
                 'icon_url',
             ],
         ]);
-
 });
 
 test('should delete a Guild', function () {
@@ -168,5 +167,17 @@ test('should delete a Guild', function () {
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJson([
             'message' => 'Guild successfully deleted',
+        ]);
+});
+
+test('should leave a Guild', function () {
+    $user = User::factory()->create();
+    $guild = Guild::factory()->create();
+    $guild->members()->attach($user->id, ['role' => Role::Member]);
+
+    $this->actingAs($user)->postJson('/api/guilds/leave/'.$guild->id)
+        ->assertStatus(StatusCode::HTTP_OK)
+        ->assertJsonStructure([
+            'message',
         ]);
 });

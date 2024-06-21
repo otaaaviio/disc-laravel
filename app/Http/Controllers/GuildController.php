@@ -79,6 +79,13 @@ class GuildController extends Controller
         return response()->json(['invite_code' => $inviteCode], StatusCode::HTTP_OK);
     }
 
+    public function leave(Guild $guild): JsonResponse
+    {
+        $this->guildService->leaveGuild($guild);
+
+        return response()->json(['message' => 'Leave Successfully'], StatusCode::HTTP_OK);
+    }
+
     public function entryByInviteCode(Request $request): JsonResponse
     {
         $request->validate(['invite_code' => 'required|string']);
