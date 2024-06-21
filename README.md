@@ -7,6 +7,7 @@
 - [Installation](#installation)
 - [Tests](#tests)
 - [Documentation](#documentation)
+- [Contributing and Examples](#contributing-and-examples)
 - [First time in the project](#first-time-in-the-project)
 - [About implementation](#about-implementation)
 
@@ -35,13 +36,22 @@ To execute this project, you need to have installed Docker in your machine. Afte
 git clone https://github.com/otaaaviio/disc-laravel.git
 ```
 
-2. In src folder, execute the bin for setup:
+2. Enter on project folder
+
+```
+cd disc-laravel
+git checkout ota/development
+```
+
+3. In src folder, execute the bin for setup:
 
 ```bash
 ./bin/setup.sh
 ```
 
-3. Access in your browser the address:
+ps: This step should take a while, because the docker will download the images and install the dependencies.
+
+4. Access in your browser the address:
 
 ```
 http://0.0.0.0:80
@@ -195,7 +205,7 @@ class ModelException extends Exception
 }
 ```
 
-`Controller`:
+Controller:
 
 ```php
 public function store(ModelRequest $request)
@@ -210,7 +220,7 @@ public function store(ModelRequest $request)
     return response()->json([
     'message' => 'Some message here',
     'model' => $modelResource
-    ], StatucCode::HTTP_CREATED);
+    ], StatusCode::HTTP_CREATED);
 }
 ```
 
@@ -227,26 +237,6 @@ public function create(array $data)
     }
     
     return ModelResource::make($model);
-}
-```
-
-Service:
-
-```php
-// this functions should be implemented with interfaces to better maintenance and abstraction
-public function store(EspecficRequest $request)
-{
-    // this will clean fields that are not in the rules
-    $data = $this->validated();
-
-    //here you process the request, within show the business logic 
-    $modelResource = $this->service->create($data);
-
-    // here you can style the response and return 
-    return response()->json([
-    'message' => 'Some message here',
-    'model' => $modelResource
-    ], StatucCode::HTTP_CREATED);
 }
 ```
 
