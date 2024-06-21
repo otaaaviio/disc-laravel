@@ -81,8 +81,15 @@ export const auth = {
                         toast.success('Logout successful');
                     })
                 })
-                .catch(() => {
-                    toast.error('An error occurred');
+                .catch((err) => {
+                    if(err.response?.status === 401) {
+                        dispatch('cleanSystem');
+                        router.push('/login').then(() => {
+                            toast.success('Logout successful');
+                        })
+                    } else {
+                        toast.error('An error occurred');
+                    }
                 });
         },
         cleanSystem({commit, rootState}) {

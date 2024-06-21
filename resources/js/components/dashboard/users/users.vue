@@ -33,10 +33,10 @@ export default {
                 if (newChannel && window.Echo) {
                     window.Echo.join(`channel.${newChannel.id}`)
                         .here((users) => {
-                            this.users.forEach(user => user.online = false);
+                            let onlineUsersMap = new Map(users.map(user => [user.id, user]));
 
-                            users.forEach(user => {
-                                this.users.find((u) => u.id === user.id).online = true;
+                            this.users.forEach(user => {
+                                user.online = onlineUsersMap.has(user.id);
                             });
 
                             this.sortUsers();

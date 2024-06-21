@@ -32,11 +32,12 @@ export default {
         ...mapState('channel', ['currentChannel']),
         ...mapState('guilds', ['currentGuild']),
         disabledChat() {
-            return !this.currentChannel || !this.currentGuild.channels.some(channel => channel.id === this.currentChannel.id);
+            return !this.currentChannel || !(this.currentGuild && this.currentGuild.channels.some(channel => channel.id === this.currentChannel.id));
         }
     },
     methods: {
         ...mapMutations('message', ['pushMessage']),
+        ...mapMutations('message', ['clearMessages']),
         ...mapMutations('message', ['deleteMessage']),
         scrollToBottom() {
             this.$nextTick(() => {
@@ -67,6 +68,12 @@ export default {
                             this.deleteMessage(msg);
                         })
                 }
+            }
+        },
+        '$store.state.guilds.currentGuild': {
+            immediate: true,
+            handler() {
+                this.clearMessages();
             }
         }
     }

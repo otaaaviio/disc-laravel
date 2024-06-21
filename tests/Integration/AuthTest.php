@@ -102,4 +102,3 @@ test('should send a email to new user', function () {
         return $job->user->email === $payload['email'];
     });
 });
-

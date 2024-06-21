@@ -7,11 +7,13 @@ export const message = {
         messages: [],
     },
     mutations: {
+        clearMessages(state) {
+            state.messages = [];
+        },
         pushMessage(state, message) {
             state.messages.push(message);
         },
         deleteMessage(state, message) {
-            console.log(message);
             state.messages = state.messages.filter(m => m.id !== message.id);
         },
     },
@@ -22,7 +24,7 @@ export const message = {
 
             if (guild_id && channel_id)
                 api.post(`/guilds/${guild_id}/channels/${channel_id}/messages`, {content: message})
-                    .then((res) => {
+                    .then(() => {
                     })
                     .catch(() => {
                         toast.error('An error occurred');
@@ -34,7 +36,7 @@ export const message = {
 
             if (guild_id && channel_id)
                 api.delete(`/guilds/${guild_id}/channels/${channel_id}/messages/${id}`)
-                    .then((res) => {
+                    .then(() => {
                         toast.success('Message deleted successfully');
                     })
                     .catch(() => {

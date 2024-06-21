@@ -193,4 +193,3 @@ test('an admin cannot leave their Guild', function () {
             'message',
         ]);
 });
-
