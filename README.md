@@ -148,9 +148,10 @@ And I focus in the backend, so the frontend is simple and functional.
 You can fork this project and make a pull request with your changes. I will be happy to review and accept your
 contribution.
 If you follow the current project pattern, everything will work fine. :D
-A example to you follow:
+<br>
+A example to you follow, with this you can maintain the project clean and organized, with easy maintenance:
 
-Resource:
+Resource to lead with responses to client:
 
 ```php
 class ModelResource extends JsonResource
@@ -164,7 +165,7 @@ class ModelResource extends JsonResource
 }
 ```
 
-Request:
+Request to validate the request data:
 
 ```php
 class ModelRequest extends FormRequest
@@ -178,7 +179,7 @@ class ModelRequest extends FormRequest
 }
 ```
 
-Exceptions:
+Exceptions to lead with errors in a clean way and eay to understand:
 
 ```php
 class ModelException extends Exception
@@ -205,7 +206,7 @@ class ModelException extends Exception
 }
 ```
 
-Controller:
+Controller to receive request and return answer to client:
 
 ```php
 public function store(ModelRequest $request)
@@ -224,7 +225,7 @@ public function store(ModelRequest $request)
 }
 ```
 
-Service:
+Service to lead with business logic and return the resource to controller:
 
 ```php
 public function create(array $data)
@@ -274,7 +275,7 @@ class SomeEvent implements ShouldBroadcast
     }
 }
 ```
-
+With websockets you can add real-time features to your project, like chat, notifications and others.
 For more infos, you can see the [Laravel Documentation](https://laravel.com/docs)
 
 ## Contact
