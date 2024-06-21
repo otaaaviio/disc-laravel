@@ -3,6 +3,7 @@
 namespace App\interfaces\Services;
 
 use App\Http\Resources\AuthResource;
+use App\Http\Resources\UserDetailedResource;
 
 interface IAuthService
 {
@@ -12,5 +13,5 @@ interface IAuthService
 
     public function register(array $data): array;
 
-    public function user(): AuthResource;
+    public function user(): UserDetailedResource;
 }

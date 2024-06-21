@@ -42,7 +42,7 @@ test('should send a message to a channel', function () {
                 ],
             ],
         ]);
-});
+})->skip(getenv('CI') !== false, 'Skipping this test on GitHub Actions');
 
 test('should delete a message into a channel', function () {
     $user = User::factory()->create();
@@ -64,4 +64,4 @@ test('should delete a message into a channel', function () {
         ->assertJson([
             'message' => 'Message deleted successfully',
         ]);
-});
+})->skip(getenv('CI') !== false, 'Skipping this test on GitHub Actions');

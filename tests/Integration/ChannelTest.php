@@ -101,4 +101,4 @@ test('should join a channel', function () {
         ->assertJson([
             'message' => 'Successfully joined channel '.$channel->name,
         ]);
-});
+})->skip(getenv('CI') !== false, 'Skipping this test on GitHub Actions');

@@ -4,6 +4,7 @@ namespace App\Http\Services;
 
 use App\Exceptions\AuthException;
 use App\Http\Resources\AuthResource;
+use App\Http\Resources\UserDetailedResource;
 use App\interfaces\Services\IAuthService;
 use App\Jobs\SendWelcomeMail;
 use App\Models\User;
@@ -41,8 +42,8 @@ class AuthService implements IAuthService
         ];
     }
 
-    public function user(): AuthResource
+    public function user(): UserDetailedResource
     {
-        return AuthResource::make(Auth::user());
+        return UserDetailedResource::make(Auth::user());
     }
 }

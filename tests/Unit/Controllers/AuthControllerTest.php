@@ -2,6 +2,7 @@
 
 use App\Exceptions\AuthException;
 use App\Http\Resources\AuthResource;
+use App\Http\Resources\UserDetailedResource;
 use App\interfaces\Services\IAuthService;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase;
@@ -60,10 +61,10 @@ test('test logout', function () {
 test('test get user authenticated', function () {
     $user = User::factory()->make();
 
-    $authResource = new AuthResource($user);
+    $userResource = new UserDetailedResource($user);
 
-    $this->mock(IAuthService::class, function (MockInterface $mock) use ($authResource) {
-        $mock->shouldReceive('user')->once()->andReturn($authResource);
+    $this->mock(IAuthService::class, function (MockInterface $mock) use ($userResource) {
+        $mock->shouldReceive('user')->once()->andReturn($userResource);
     });
 
     $res = $this->actingAs($user)->getJson('api/auth/user');
