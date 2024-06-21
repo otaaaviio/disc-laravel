@@ -16,10 +16,19 @@ class SendMessageCommand extends Command
 
     public function handle(): void
     {
+        $userId = $this->ask('Write the user ID');
+        $channelId = $this->ask('Write the channel ID');
+
+        if (! is_numeric($userId) || ! is_numeric($channelId)) {
+            $this->error('User ID and Channel ID must be numeric');
+
+            return;
+        }
+
         $message = new Message([
-            'content' => 'Hello, World 123123!',
-            'user_id' => 3,
-            'channel_id' => 97,
+            'content' => 'Hello, World!',
+            'user_id' => $userId,
+            'channel_id' => $channelId,
         ]);
 
         $message->save();

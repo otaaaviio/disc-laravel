@@ -40,6 +40,7 @@ export default {
     },
     computed: {
         isOwner() {
+            if(!this.$store.getters['auth/user']) return false;
             return this.$store.getters['auth/user'].user.id === this.message.user.id;
         }
     },

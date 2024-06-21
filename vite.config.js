@@ -3,6 +3,19 @@ import laravel from 'laravel-vite-plugin';
 import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
+    server: {
+        host: '0.0.0.0',
+        hmr: {
+            host: '0.0.0.0',
+        },
+        cors: true,
+        https: false,
+    },
+    build: {
+        rollupOptions: {
+            input: 'resources/js/main.js',
+        },
+    },
     plugins: [
         vue(),
         laravel({

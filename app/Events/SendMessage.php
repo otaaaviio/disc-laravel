@@ -21,7 +21,7 @@ class SendMessage implements ShouldBroadcastNow
 
     public function broadcastOn(): PrivateChannel
     {
-        return new PrivateChannel('channel.' . $this->message->channel_id);
+        return new PrivateChannel('channel.'.$this->message->channel_id);
     }
 
     public function broadcastWith(): array

@@ -25,6 +25,9 @@ export const guilds = {
         },
         setCurrentGuild(state, guild) {
             state.currentGuild = guild;
+        },
+        clearGuilds(state) {
+            state.guilds = [];
         }
     },
     actions: {
@@ -37,8 +40,10 @@ export const guilds = {
                     }
                 })
                 .catch((err) => {
-                    if (err.response.status === 404)
+                    if (err.response.status === 404) {
                         toast.warning('No guilds found, register one!');
+                        commit('clearGuilds');
+                    }
                     else
                         toast.error('An error occurred');
                 })
