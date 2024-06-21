@@ -5,6 +5,7 @@ namespace App\Http\Services;
 use App\Exceptions\AuthException;
 use App\Http\Resources\AuthResource;
 use App\interfaces\Services\IAuthService;
+use App\Jobs\SendWelcomeMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +32,8 @@ class AuthService implements IAuthService
     {
         $user = User::create($data);
         $token = $user->createToken('Access Token')->plainTextToken;
+
+        SendWelcomeMail::dispatch($user)->onConnection('database');
 
         return [
             'token' => $token,

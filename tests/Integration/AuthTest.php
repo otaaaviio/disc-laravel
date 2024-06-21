@@ -2,9 +2,11 @@
 
 namespace Tests\Integration;
 
+use App\Jobs\SendWelcomeMail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Queue;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 use Tests\TestCase;
 
@@ -81,3 +83,23 @@ test('cannot access user authenticated route without authentication', function (
 
     $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
 });
+
+test('should send a email to new user', function () {
+    Queue::fake();
+
+    $payload = [
+        'name' => $this->faker->name,
+        'email' => $this->faker->unique()->safeEmail,
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
+
+    $res = $this->postJson('api/auth/register', $payload);
+
+    $res->assertStatus(StatusCode::HTTP_CREATED);
+
+    Queue::assertPushed(SendWelcomeMail::class, function ($job) use ($payload) {
+        return $job->user->email === $payload['email'];
+    });
+});
+
