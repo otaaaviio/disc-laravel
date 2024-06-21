@@ -99,6 +99,9 @@ class GuildService implements IGuildService
     private function create(array $data): GuildResource
     {
         $guild = Guild::create($data);
+        $guild->invite_code = $this->getRandomInviteCode().$guild->id;
+        $guild->save();
+
         $guild->members()->attach(auth()->id(), ['role' => Role::Admin]);
 
         return GuildResource::make($guild);
@@ -132,5 +135,11 @@ class GuildService implements IGuildService
         if (! $guild_member || $guild_member->role !== Role::Admin->value) {
             throw GuildException::dontHaveManagerPermission();
         }
+    }
+
+    private function getRandomInviteCode(): string
+    {
+        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        return substr(str_shuffle($characters), 0, 8);
     }
 }

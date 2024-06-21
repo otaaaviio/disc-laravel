@@ -11,7 +11,7 @@
                 aria-labelledby="dropdownHoverButton">
                 <li v-for="item in items">
                     <button
-                        @click="item.action"
+                        @click="executeAction(item)"
                         v-if="!item.disabled"
                         class="block px-4 py-2 hover:bg-gray-100 w-full">{{ item.name }}
                     </button>
@@ -48,6 +48,12 @@ export default {
         };
     },
     methods: {
+        executeAction(item) {
+            if (!item.disabled) {
+                item.action();
+                this.toggleDropdown();
+            }
+        },
         closeDropdownIfClickedOutside(event) {
             if (!this.$el.contains(event.target)) {
                 this.isDropdownVisible = false;

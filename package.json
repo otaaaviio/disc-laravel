@@ -23,6 +23,7 @@
         "@fortawesome/free-solid-svg-icons": "^6.5.2",
         "@fortawesome/vue-fontawesome": "^3.0.8",
         "@vitejs/plugin-vue": "^5.0.5",
+        "clipboard": "^2.0.11",
         "vue": "^3.4.29",
         "vue-router": "^4.3.3",
         "vue3-toastify": "^0.2.1",

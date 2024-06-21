@@ -1,5 +1,6 @@
 import api from "../services/api.js";
 import {toast} from "vue3-toastify";
+import ClipboardJS from "clipboard";
 
 export const guilds = {
     namespaced: true,
@@ -57,10 +58,11 @@ export const guilds = {
                     toast.error('An error occurred');
                 })
         },
-        delete({dispatch}, id) {
+        delete({dispatch, state}, id) {
             api.delete(`/guilds/${id}`)
                 .then(() => {
                     dispatch('index');
+                    state.currentGuild = null;
                     toast.success('Guild deleted successfully');
                 })
                 .catch(() => {
@@ -83,8 +85,28 @@ export const guilds = {
                     dispatch('index');
                     toast.success('Joined guild successfully');
                 })
+                .catch((err) => {
+                    if(err.response?.data?.message === 'Invalid invite code')
+                        toast.error('Invalid code');
+                    else
+                        toast.error('Invalid code');
+                });
+        },
+        getInviteCode({state}, id) {
+            if(!id) return;
+            api.get(`/guilds/inviteCode/${id}`)
+                .then(async (res) => {
+                    new ClipboardJS(document.body, {
+                        text: function() {
+                            return res.data.invite_code;
+                        }
+                    });
+                    setTimeout(() => {
+                        toast.success('Invite code copied to clipboard');
+                    }, 500);
+                })
                 .catch(() => {
-                    toast.error('Invalid code');
+                    toast.error('An error occurred');
                 });
         }
     },

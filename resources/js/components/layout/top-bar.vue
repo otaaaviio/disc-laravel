@@ -52,6 +52,7 @@ export default {
             return [
                 {name: 'Entry a new Guild', action: () => this.isOpenEntryModal = true, disabled: false},
                 {name: 'Register Guild', action: () => this.isOpenCreateModal = true, disabled: false},
+                {name: 'Get invite code', action: this.getInviteCode, disabled: !this.currentGuild},
                 {
                     name: 'Delete Current Guild',
                     action: () => this.isOpenModel = true,
@@ -70,7 +71,10 @@ export default {
         async confirmDelGuild() {
             this.isOpenModel = false;
             await this.$store.dispatch('guilds/delete', this.currentGuild.id);
-        }
+        },
+        async getInviteCode() {
+            await this.$store.dispatch('guilds/getInviteCode', this.currentGuild.id)
+        },
     },
 }
 </script>
