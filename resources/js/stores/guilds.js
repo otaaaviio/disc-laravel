@@ -104,7 +104,7 @@ export const guilds = {
                         }
                     });
                     setTimeout(() => {
-                        toast.success('Invite code copied to clipboard');
+                        toast.success('Invite code: ' + res.data.invite_code + ' copied to clipboard');
                     }, 500);
                 })
                 .catch(() => {
