@@ -1,9 +1,9 @@
 <?php
 
 use App\Exceptions\AuthException;
-use App\Http\Resources\AuthResource;
+use App\Http\Controllers\AuthController;
 use App\Http\Resources\UserDetailedResource;
-use App\interfaces\Services\IAuthService;
+use App\Interfaces\Services\IAuthService;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase;
 use Mockery\MockInterface;
@@ -15,7 +15,7 @@ uses()->group('AuthController Test');
 
 test('test login', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('login')->once()->andReturn('token');
+        $mock->shouldReceive('loginUser')->once()->andReturn('token');
     });
 
     $res = $this->postJson('api/auth/login', [
@@ -32,7 +32,7 @@ test('test login', function () {
 
 test('test login with invalid credentials', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('login')->andThrow(AuthException::invalidCredentials());
+        $mock->shouldReceive('loginUser')->andThrow(AuthException::invalidCredentials());
     });
 
     $res = $this->postJson('api/auth/login', [
@@ -49,13 +49,17 @@ test('test login with invalid credentials', function () {
 test('test logout', function () {
     $user = User::factory()->make();
 
-    $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('logout')->once();
+    $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) {
+        $mock->shouldReceive('logoutUser')->once();
     });
 
-    $response = $this->actingAs($user)->postJson('api/auth/logout');
+    $authController = new AuthController($mockAuthService);
 
-    $response->assertStatus(StatusCode::HTTP_OK);
+    $this->actingAs($user);
+
+    $res = $authController->logout();
+
+    $this->assertEquals(StatusCode::HTTP_OK, $res->status());
 });
 
 test('test get user authenticated', function () {
@@ -64,7 +68,7 @@ test('test get user authenticated', function () {
     $userResource = new UserDetailedResource($user);
 
     $this->mock(IAuthService::class, function (MockInterface $mock) use ($userResource) {
-        $mock->shouldReceive('user')->once()->andReturn($userResource);
+        $mock->shouldReceive('getAuthenticatedUser')->once()->andReturn($userResource);
     });
 
     $res = $this->actingAs($user)->getJson('api/auth/user');
@@ -81,7 +85,7 @@ test('test get user authenticated', function () {
 
 test('test register', function () {
     $this->mock(IAuthService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('register')
+        $mock->shouldReceive('registerUser')
             ->once()
             ->andReturn([
                 'user' => [

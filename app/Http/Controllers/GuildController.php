@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreGuildRequest;
-use App\interfaces\Services\IGuildService;
+use App\Interfaces\Services\IGuildService;
 use App\Models\Guild;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,14 +28,14 @@ class GuildController extends Controller
 
     public function index(): JsonResponse
     {
-        $guildsResource = $this->guildService->index();
+        $guildsResource = $this->guildService->getUserGuilds();
 
         return response()->json(['guilds' => $guildsResource], StatusCode::HTTP_OK);
     }
 
     public function show(Guild $guild): JsonResponse
     {
-        $guildResource = $this->guildService->show($guild);
+        $guildResource = $this->guildService->getGuild($guild);
 
         return response()->json(['guild' => $guildResource], StatusCode::HTTP_OK);
     }

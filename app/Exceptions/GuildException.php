@@ -46,14 +46,6 @@ class GuildException extends Exception
         );
     }
 
-    public static function notFound(): self
-    {
-        return new self(
-            'Guild not found',
-            StatusCode::HTTP_NOT_FOUND
-        );
-    }
-
     public static function notAGuildMemberException(): self
     {
         return new self(

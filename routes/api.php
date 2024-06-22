@@ -20,7 +20,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/inviteCode/{guild}', [GuildController::class, 'getInviteCode']);
             Route::post('/entry', [GuildController::class, 'entryByInviteCode']);
             Route::post('/leave/{guild}', [GuildController::class, 'leave']);
-            Route::get('/user', [GuildController::class, 'getAuthenticatedUserGuilds']);
+            Route::get('/user', [GuildController::class, 'show']);
 
             Route::prefix('/{guild}/channels')->group(function () {
                 Route::get('/{channel}', [ChannelController::class, 'join']);
@@ -40,6 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::prefix('auth')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
-        Route::get('/user', [AuthController::class, 'getUserAuthenticated']);
+        Route::get('/user', [AuthController::class, 'show']);
     });
 });

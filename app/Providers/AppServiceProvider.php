@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
-use App\Http\Services\AuthService;
-use App\Http\Services\ChannelService;
-use App\Http\Services\GuildService;
-use App\Http\Services\MessageService;
-use App\interfaces\Services\IAuthService;
-use App\interfaces\Services\IChannelService;
-use App\interfaces\Services\IGuildService;
-use App\interfaces\Services\IMessageService;
+use App\Interfaces\Services\IAuthService;
+use App\Interfaces\Services\IChannelService;
+use App\Interfaces\Services\IGuildService;
+use App\Interfaces\Services\IMessageService;
+use App\Services\AuthService;
+use App\Services\ChannelService;
+use App\Services\GuildService;
+use App\Services\MessageService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

@@ -63,7 +63,7 @@ test('can register a new user', function () {
     ]);
 });
 
-test('can get user authenticated', function () {
+test('should get user authenticated', function () {
     $user = User::factory()->create();
 
     $response = $this->actingAs($user)->getJson('api/auth/user');

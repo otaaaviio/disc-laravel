@@ -2,12 +2,12 @@
 
 namespace Tests\Unit\Controllers;
 
-use App\enums\Role;
+use App\Enums\Role;
 use App\Exceptions\MessageException;
 use App\Http\Controllers\MessageController;
 use App\Http\Requests\StoreMessageRequest;
 use App\Http\Resources\MessageResource;
-use App\interfaces\Services\IMessageService;
+use App\Interfaces\Services\IMessageService;
 use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\Message;
@@ -63,7 +63,7 @@ test('should delete a message', function () {
 
     $mockMessageService = $this->mock(IMessageService::class,
         function (MockInterface $mock) use ($message, $guild, $channel) {
-            $mock->shouldReceive('delete')
+            $mock->shouldReceive('deleteMessage')
                 ->once()
                 ->with($guild, $channel, $message);
         });
@@ -90,7 +90,7 @@ test('cannot delete a message that is not your', function () {
 
     $mockMessageService = $this->mock(IMessageService::class,
         function (MockInterface $mock) use ($message, $guild, $channel) {
-            $mock->shouldReceive('delete')
+            $mock->shouldReceive('deleteMessage')
                 ->once()
                 ->with($guild, $channel, $message)
                 ->andThrow(MessageException::dontHavePermissionToDeleteMessage());

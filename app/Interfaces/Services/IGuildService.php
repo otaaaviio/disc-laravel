@@ -1,6 +1,6 @@
 <?php
 
-namespace App\interfaces\Services;
+namespace App\Interfaces\Services;
 
 use App\Http\Resources\GuildDetailedResource;
 use App\Http\Resources\GuildResource;
@@ -11,9 +11,9 @@ interface IGuildService
 {
     public function getAllGuilds(): AnonymousResourceCollection;
 
-    public function index(): AnonymousResourceCollection;
+    public function getUserGuilds(): AnonymousResourceCollection;
 
-    public function show(Guild $guild): GuildDetailedResource;
+    public function getGuild(Guild $guild): GuildDetailedResource;
 
     public function upsertGuild(array $data, ?Guild $guild = null): GuildResource;
 

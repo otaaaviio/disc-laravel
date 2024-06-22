@@ -2,7 +2,7 @@
 
 namespace Tests\Integration;
 
-use App\enums\Role;
+use App\Enums\Role;
 use App\Models\Guild;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;

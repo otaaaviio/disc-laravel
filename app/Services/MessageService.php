@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Events\MessageDeleted;
 use App\Events\SendMessage;
 use App\Exceptions\ChannelException;
 use App\Exceptions\MessageException;
 use App\Http\Resources\MessageResource;
-use App\interfaces\Services\IMessageService;
+use App\Interfaces\Services\IMessageService;
 use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\Message;
@@ -38,7 +38,7 @@ class MessageService implements IMessageService
      * @throws ChannelException
      * @throws MessageException
      */
-    public function delete(Guild $guild, Channel $channel, Message $message): void
+    public function deleteMessage(Guild $guild, Channel $channel, Message $message): void
     {
         $user_id = auth()->id();
 

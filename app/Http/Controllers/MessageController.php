@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMessageRequest;
-use App\interfaces\Services\IMessageService;
+use App\Interfaces\Services\IMessageService;
 use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\Message;
@@ -33,7 +33,7 @@ class MessageController extends Controller
 
     public function destroy(Guild $guild, Channel $channel, Message $message): JsonResponse
     {
-        $this->messageService->delete($guild, $channel, $message);
+        $this->messageService->deleteMessage($guild, $channel, $message);
 
         return response()->json([
             'message' => 'Message deleted successfully',

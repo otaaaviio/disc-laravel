@@ -4,7 +4,7 @@ use App\Exceptions\GuildException;
 use App\Http\Controllers\GuildController;
 use App\Http\Resources\GuildDetailedResource;
 use App\Http\Resources\GuildResource;
-use App\interfaces\Services\IGuildService;
+use App\Interfaces\Services\IGuildService;
 use App\Models\Guild;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\TestCase;
@@ -34,7 +34,7 @@ test('should get all guilds', function () {
 
 test('should get guilds with index method', function () {
     $mockGuildService = $this->mock(IGuildService::class, function (MockInterface $mock) {
-        $mock->shouldReceive('index')
+        $mock->shouldReceive('getUserGuilds')
             ->once()
             ->andReturn(new AnonymousResourceCollection(collect([]), GuildResource::class));
     });
@@ -50,7 +50,7 @@ test('should get guilds with index method', function () {
 test('should return a detailed guild', function () {
     $guild = Guild::factory()->create();
     $mockGuildService = $this->mock(IGuildService::class, function (MockInterface $mock) use ($guild) {
-        $mock->shouldReceive('show')
+        $mock->shouldReceive('getGuild')
             ->once()
             ->with($guild)
             ->andReturn(new GuildDetailedResource($guild));

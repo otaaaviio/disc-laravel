@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreChannelRequest;
 use App\Http\Requests\UpdateChannelRequest;
 use App\Http\Resources\MessageResource;
-use App\interfaces\Services\IChannelService;
+use App\Interfaces\Services\IChannelService;
 use App\Models\Channel;
 use App\Models\Guild;
 use Illuminate\Http\JsonResponse;
@@ -34,7 +34,7 @@ class ChannelController extends Controller
     {
         $data = $request->validated();
 
-        $channelResource = $this->channelService->upsert($data, $guild);
+        $channelResource = $this->channelService->upsertChannel($data, $guild);
 
         return response()->json([
             'message' => 'Channel successfully created in guild '.$guild->name,
@@ -46,7 +46,7 @@ class ChannelController extends Controller
     {
         $data = $request->validated();
 
-        $channelResource = $this->channelService->upsert($data, $guild, $channel);
+        $channelResource = $this->channelService->upsertChannel($data, $guild, $channel);
 
         return response()->json([
             'message' => 'Channel successfully updated',
@@ -56,7 +56,7 @@ class ChannelController extends Controller
 
     public function destroy(Guild $guild, Channel $channel): JsonResponse
     {
-        $this->channelService->delete($guild, $channel);
+        $this->channelService->deleteChannel($guild, $channel);
 
         return response()->json([
             'message' => 'Channel successfully deleted',

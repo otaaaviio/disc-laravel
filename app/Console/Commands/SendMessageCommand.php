@@ -25,13 +25,11 @@ class SendMessageCommand extends Command
             return;
         }
 
-        $message = new Message([
+        $message = Message::create([
             'content' => 'Hello, World!',
             'user_id' => $userId,
             'channel_id' => $channelId,
         ]);
-
-        $message->save();
 
         SendMessage::dispatch($message);
 

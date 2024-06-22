@@ -47,13 +47,5 @@ export default {
             await this.$store.dispatch('auth/login', this.formData);
         },
     },
-    mounted() {
-        if (process.env.NODE_ENV === 'development') {
-            this.formData = {
-                email: 'adm@admin.com',
-                password: 'password',
-            };
-        }
-    }
 }
 </script>

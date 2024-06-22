@@ -35,6 +35,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Message whereUserId($value)
  * @method static Builder|Message withTrashed()
  * @method static Builder|Message withoutTrashed()
+ * @method static create(array $data)
  *
  * @mixin \Eloquent
  */

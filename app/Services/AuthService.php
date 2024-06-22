@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
 use App\Exceptions\AuthException;
 use App\Http\Resources\AuthResource;
 use App\Http\Resources\UserDetailedResource;
-use App\interfaces\Services\IAuthService;
+use App\Interfaces\Services\IAuthService;
 use App\Jobs\SendWelcomeMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +15,7 @@ class AuthService implements IAuthService
     /**
      * @throws AuthException
      */
-    public function login(array $credentials): string
+    public function loginUser(array $credentials): string
     {
         if (! Auth::attempt($credentials)) {
             throw AuthException::invalidCredentials();
@@ -24,12 +24,12 @@ class AuthService implements IAuthService
         return Auth::user()->createToken('Access Token')->plainTextToken;
     }
 
-    public function logout(): void
+    public function logoutUser(): void
     {
         Auth::user()->tokens()->delete();
     }
 
-    public function register(array $data): array
+    public function registerUser(array $data): array
     {
         $user = User::create($data);
         $token = $user->createToken('Access Token')->plainTextToken;
@@ -42,7 +42,7 @@ class AuthService implements IAuthService
         ];
     }
 
-    public function user(): UserDetailedResource
+    public function getAuthenticatedUser(): UserDetailedResource
     {
         return UserDetailedResource::make(Auth::user());
     }

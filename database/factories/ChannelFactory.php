@@ -14,17 +14,9 @@ class ChannelFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => '',
+            'name' => $this->faker->name,
             'description' => $this->faker->sentence,
             'guild_id' => Guild::factory(),
         ];
-    }
-
-    public function configure(): ChannelFactory
-    {
-        return $this->afterCreating(function (Channel $channel) {
-            $channel->name = 'Channel '.$channel->id;
-            $channel->save();
-        });
     }
 }

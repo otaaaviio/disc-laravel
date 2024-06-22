@@ -1,30 +1,29 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
-use App\enums\Role;
+use App\Enums\Role;
 use App\Exceptions\GuildException;
 use App\Http\Resources\GuildDetailedResource;
 use App\Http\Resources\GuildResource;
-use App\interfaces\Services\IGuildService;
+use App\Interfaces\Services\IGuildService;
 use App\Models\Guild;
 use App\Models\GuildMember;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Throwable;
+use Illuminate\Support\Str;
 
 class GuildService implements IGuildService
 {
     public function getAllGuilds(): AnonymousResourceCollection
     {
-        $guilds = Guild::all();
-
-        return GuildResource::collection($guilds);
+        return GuildResource::collection(Guild::all());
     }
 
     /**
      * @throws GuildException
      */
-    public function index(): AnonymousResourceCollection
+    public function getUserGuilds(): AnonymousResourceCollection
     {
         $guilds = Guild::whereHas('members', function ($query) {
             $query->where('user_id', auth()->id());
@@ -40,14 +39,14 @@ class GuildService implements IGuildService
     /**
      * @throws GuildException
      */
-    public function show(Guild $guild): GuildDetailedResource
+    public function getGuild(Guild $guild): GuildDetailedResource
     {
         $guild = Guild::where('id', $guild->id)->whereHas('members', function ($query) {
             $query->where('user_id', auth()->id());
         })->first();
 
         if (! $guild) {
-            throw GuildException::notFound();
+            throw GuildException::notAGuildMemberException();
         }
 
         return GuildDetailedResource::make($guild);
@@ -56,7 +55,7 @@ class GuildService implements IGuildService
     /**
      * @throws GuildException
      */
-    public function upsertGuild(array $data, ?Guild $guild = null): GuildResource
+    public function upsertGuild(array $data, Guild $guild = null): GuildResource
     {
         if (! $guild) {
             return $this->create($data);
@@ -99,7 +98,7 @@ class GuildService implements IGuildService
     private function create(array $data): GuildResource
     {
         $guild = Guild::create($data);
-        $guild->invite_code = $this->getRandomInviteCode().$guild->id;
+        $guild->invite_code = Str::random(8) . $guild->id;
         $guild->save();
 
         $guild->members()->attach(auth()->id(), ['role' => Role::Admin]);
@@ -155,13 +154,6 @@ class GuildService implements IGuildService
         if (! $guild_member || $guild_member->role !== Role::Admin->value) {
             throw GuildException::dontHaveManagerPermission();
         }
-    }
-
-    private function getRandomInviteCode(): string
-    {
-        $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-
-        return substr(str_shuffle($characters), 0, 8);
     }
 
     private function checkRequestUserIsAdmin(Guild $guild): bool

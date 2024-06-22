@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Services;
+namespace App\Services;
 
-use App\enums\Role;
+use App\Enums\Role;
 use App\Events\UserJoinedChannel;
 use App\Exceptions\ChannelException;
 use App\Exceptions\GuildException;
 use App\Http\Resources\ChannelResource;
-use App\interfaces\Services\IChannelService;
+use App\Interfaces\Services\IChannelService;
 use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\GuildMember;
@@ -18,26 +18,14 @@ class ChannelService implements IChannelService
     /**
      * @throws ChannelException
      */
-    public function upsert(array $data, Guild $guild, ?Channel $channel = null): ChannelResource
-    {
-        if (! $channel) {
-            return $this->store($data, $guild);
-        }
-
-        return $this->update($data, $guild, $channel);
-    }
-
-    /**
-     * @throws ChannelException
-     */
-    private function store(array $data, Guild $guild): ChannelResource
+    public function upsertChannel(array $data, Guild $guild, Channel $channel = null): ChannelResource
     {
         $this->checkPermissions($guild->id, auth()->id());
 
-        $channel = Channel::create([
-            ...$data,
+        $channel = Channel::updateOrCreate([
+            'id' => $channel?->id,
             'guild_id' => $guild->id,
-        ]);
+        ], $data);
 
         return ChannelResource::make($channel);
     }
@@ -45,19 +33,7 @@ class ChannelService implements IChannelService
     /**
      * @throws ChannelException
      */
-    private function update(array $data, Guild $guild, Channel $channel): ChannelResource
-    {
-        $this->checkPermissions($guild->id, auth()->id());
-
-        $channel->update($data);
-
-        return ChannelResource::make($channel);
-    }
-
-    /**
-     * @throws ChannelException
-     */
-    public function delete(Guild $guild, Channel $channel): void
+    public function deleteChannel(Guild $guild, Channel $channel): void
     {
         $this->checkPermissions($guild->id, auth()->id());
 

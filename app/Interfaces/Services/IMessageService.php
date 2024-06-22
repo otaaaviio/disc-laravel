@@ -1,6 +1,6 @@
 <?php
 
-namespace App\interfaces\Services;
+namespace App\Interfaces\Services;
 
 use App\Http\Resources\MessageResource;
 use App\Models\Channel;
@@ -11,5 +11,5 @@ interface IMessageService
 {
     public function sendMessage(Guild $guild, Channel $channel, array $data): MessageResource;
 
-    public function delete(Guild $guild, Channel $channel, Message $message): void;
+    public function deleteMessage(Guild $guild, Channel $channel, Message $message): void;
 }

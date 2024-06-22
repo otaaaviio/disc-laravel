@@ -40,6 +40,7 @@ use Illuminate\Support\Carbon;
  * @method static Builder|Channel withTrashed()
  * @method static Builder|Channel withoutTrashed()
  * @method static create(array $data)
+ * @method static updateOrCreate(null[] $array, array $data)
  *
  * @mixin Eloquent
  */

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AuthRequest;
 use App\Http\Requests\RegisterRequest;
-use App\interfaces\Services\IAuthService;
+use App\Interfaces\Services\IAuthService;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
@@ -21,7 +21,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        $token = $this->authService->login($credentials);
+        $token = $this->authService->loginUser($credentials);
 
         return response()->json([
             'message' => 'Successfully logged in',
@@ -31,7 +31,7 @@ class AuthController extends Controller
 
     public function logout(): JsonResponse
     {
-        $this->authService->logout();
+        $this->authService->logoutUser();
 
         return response()->json([
             'message' => 'Successfully logged out',
@@ -41,7 +41,7 @@ class AuthController extends Controller
     public function register(RegisterRequest $request): JsonResponse
     {
         $data = $request->validated();
-        $res = $this->authService->register($data);
+        $res = $this->authService->registerUser($data);
 
         return response()->json([
             'message' => 'Successfully registered',
@@ -50,9 +50,9 @@ class AuthController extends Controller
         ], StatusCode::HTTP_CREATED);
     }
 
-    public function getUserAuthenticated(): JsonResponse
+    public function show(): JsonResponse
     {
-        $userResource = $this->authService->user();
+        $userResource = $this->authService->getAuthenticatedUser();
 
         return response()->json([
             'user' => $userResource,

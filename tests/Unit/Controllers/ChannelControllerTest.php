@@ -3,7 +3,7 @@
 namespace Tests\Unit\Controllers;
 
 use App\Http\Controllers\ChannelController;
-use App\interfaces\Services\IChannelService;
+use App\Interfaces\Services\IChannelService;
 use App\Models\Channel;
 use App\Models\Guild;
 use Illuminate\Foundation\Testing\TestCase;
@@ -18,7 +18,7 @@ test('test delete', function () {
     $channel = Channel::factory()->make();
     $guild = Guild::factory()->make();
     $mockChannelService = $this->mock(IChannelService::class, function (MockInterface $mock) use ($channel, $guild) {
-        $mock->shouldReceive('delete')->once()->with($guild, $channel);
+        $mock->shouldReceive('deleteChannel')->once()->with($guild, $channel);
     });
 
     $channelController = new ChannelController($mockChannelService);
