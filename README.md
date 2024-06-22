@@ -69,7 +69,7 @@ For the next times, you can use this for stop or start the containers:
 
 ## Tests
 
-This project contains units and integration tests. To execute the tests, you can use the command:
+This project contains units and integration tests. Always this branch is pushed, will execute tests in GitHub Actions. Also, to you execute tests, use the command:
 
 ```bash
 ./vendor/bin/sail test
