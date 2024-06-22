@@ -15,6 +15,7 @@ uses(TestCase::class);
 uses()->group('ChannelController Test');
 
 test('test delete', function () {
+    // arrange
     $channel = Channel::factory()->make();
     $guild = Guild::factory()->make();
     $mockChannelService = $this->mock(IChannelService::class, function (MockInterface $mock) use ($channel, $guild) {
@@ -23,8 +24,10 @@ test('test delete', function () {
 
     $channelController = new ChannelController($mockChannelService);
 
+    // act
     $res = $channelController->destroy($guild, $channel);
 
+    // assert
     $this->assertEquals(StatusCode::HTTP_OK, $res->status());
     $this->assertEquals([
         'message' => 'Channel successfully deleted',

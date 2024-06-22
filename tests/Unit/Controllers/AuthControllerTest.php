@@ -2,10 +2,13 @@
 
 use App\Exceptions\AuthException;
 use App\Http\Controllers\AuthController;
+use App\Http\Requests\AuthRequest;
+use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserDetailedResource;
 use App\Interfaces\Services\IAuthService;
 use App\Models\User;
 use Illuminate\Foundation\Testing\TestCase;
+use Illuminate\Http\Request;
 use Mockery\MockInterface;
 use Symfony\Component\HttpFoundation\Response as StatusCode;
 
@@ -14,77 +17,93 @@ uses(TestCase::class);
 uses()->group('AuthController Test');
 
 test('test login', function () {
-    $this->mock(IAuthService::class, function (MockInterface $mock) {
+    // arrange
+    $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) {
         $mock->shouldReceive('loginUser')->once()->andReturn('token');
     });
 
-    $res = $this->postJson('api/auth/login', [
+    $request = Request::create('/login', 'POST', [
         'email' => 'test@example.com',
         'password' => 'password',
     ]);
 
-    $res->assertStatus(StatusCode::HTTP_OK)
-        ->assertJsonStructure([
-            'message',
-            'token',
-        ]);
+    $req = AuthRequest::createFrom($request);
+    $req->setContainer(app());
+    $req->validateResolved();
+
+    $authController = new AuthController($mockAuthService);
+
+    // act
+    $res = $authController->login($req);
+
+    // assert
+    $this->assertEquals(StatusCode::HTTP_OK, $res->status());
+    $this->assertEquals([
+        'message' => 'Successfully logged in',
+        'token' => 'token'
+    ], $res->getData(true));
 });
 
 test('test login with invalid credentials', function () {
-    $this->mock(IAuthService::class, function (MockInterface $mock) {
+    // arrange
+    $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) {
         $mock->shouldReceive('loginUser')->andThrow(AuthException::invalidCredentials());
     });
 
-    $res = $this->postJson('api/auth/login', [
-        'email' => 'mock@example.com',
-        'password' => 'password',
+    $request = Request::create('/login', 'POST', [
+        'email' => 'asd@asd.com',
+        'password' => 'asd',
     ]);
 
-    $res->assertStatus(StatusCode::HTTP_UNAUTHORIZED)
-        ->assertJson([
-            'message' => 'Invalid credentials',
-        ]);
-});
+    $req = AuthRequest::createFrom($request);
+    $req->setContainer(app());
+    $req->validateResolved();
+
+    $authController = new AuthController($mockAuthService);
+
+    // act & assert
+    $authController->login($req);
+})->throws(AuthException::class);
 
 test('test logout', function () {
-    $user = User::factory()->make();
-
+    // arrange
     $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) {
         $mock->shouldReceive('logoutUser')->once();
     });
 
     $authController = new AuthController($mockAuthService);
 
-    $this->actingAs($user);
-
+    // act
     $res = $authController->logout();
 
+    // assert
     $this->assertEquals(StatusCode::HTTP_OK, $res->status());
 });
 
 test('test get user authenticated', function () {
+    // arrange
     $user = User::factory()->make();
-
     $userResource = new UserDetailedResource($user);
 
-    $this->mock(IAuthService::class, function (MockInterface $mock) use ($userResource) {
+    $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) use ($userResource) {
         $mock->shouldReceive('getAuthenticatedUser')->once()->andReturn($userResource);
     });
 
-    $res = $this->actingAs($user)->getJson('api/auth/user');
+    $authController = new AuthController($mockAuthService);
 
-    $res->assertStatus(StatusCode::HTTP_OK)
-        ->assertJsonStructure([
-            'user' => [
-                'id',
-                'name',
-                'email',
-            ],
-        ]);
+    // act
+    $res = $authController->show();
+
+    // assert
+    $this->assertEquals(StatusCode::HTTP_OK, $res->status());
+    $this->assertEquals([
+        'user' => $userResource->resolve(),
+    ], $res->getData(true));
 });
 
 test('test register', function () {
-    $this->mock(IAuthService::class, function (MockInterface $mock) {
+    // arrange
+    $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) {
         $mock->shouldReceive('registerUser')
             ->once()
             ->andReturn([
@@ -97,17 +116,34 @@ test('test register', function () {
             ]);
     });
 
-    $response = $this->postJson('api/auth/register', [
+    $request = Request::create('/register', 'POST', [
         'name' => 'test',
-        'email' => 'newtest@example.com',
+        'email' => 'test@example.com',
         'password' => 'password',
         'password_confirmation' => 'password',
     ]);
-    $response->assertStatus(StatusCode::HTTP_CREATED);
+
+    $req = RegisterRequest::createFrom($request);
+    $req->setContainer(app());
+    $req->validateResolved();
+
+    $authController = new AuthController($mockAuthService);
+
+    // act
+    $res = $authController->register($req);
+
+    // assert
+    $this->assertEquals(StatusCode::HTTP_CREATED, $res->status());
 });
 
 test('test access user profile without authentication', function () {
-    $response = $this->getJson('api/auth/user');
+    // arrange
+    $mockAuthService = $this->mock(IAuthService::class, function (MockInterface $mock) {
+        $mock->shouldReceive('getAuthenticatedUser')->andThrow(AuthException::unauthorized());
+    });
 
-    $response->assertStatus(StatusCode::HTTP_UNAUTHORIZED);
-});
+    $authController = new AuthController($mockAuthService);
+
+    // act & assert
+    $res = $authController->show();
+})->throws(AuthException::class);

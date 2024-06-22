@@ -15,6 +15,7 @@ uses(TestCase::class, DatabaseTransactions::class, WithFaker::class);
 uses()->group('Guild Test');
 
 test('should create a new Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $payload = [
         'name' => $this->faker->name,
@@ -22,9 +23,9 @@ test('should create a new Guild', function () {
         'icon' => $this->faker->imageUrl(),
     ];
 
-    $res = $this->actingAs($user)->postJson('/api/guilds', $payload);
-
-    $res->assertStatus(StatusCode::HTTP_CREATED)
+    // act & assert
+    $this->actingAs($user)->postJson('/api/guilds', $payload)
+        ->assertStatus(StatusCode::HTTP_CREATED)
         ->assertJsonStructure([
             'guild' => [
                 'id',
@@ -36,6 +37,7 @@ test('should create a new Guild', function () {
 });
 
 test('should update a Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
@@ -46,7 +48,8 @@ test('should update a Guild', function () {
         'icon' => $this->faker->imageUrl(),
     ];
 
-    $this->actingAs($user)->putJson('/api/guilds/'.$guild->id, $payload)
+    // act & assert
+    $this->actingAs($user)->putJson('/api/guilds/' . $guild->id, $payload)
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJsonStructure([
             'message',
@@ -60,11 +63,13 @@ test('should update a Guild', function () {
 });
 
 test('should return a specific a Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
 
-    $this->actingAs($user)->getJson('/api/guilds/'.$guild->id)
+    // act & assert
+    $this->actingAs($user)->getJson('/api/guilds/' . $guild->id)
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJsonStructure([
             'guild' => [
@@ -79,10 +84,12 @@ test('should return a specific a Guild', function () {
 });
 
 test('should return authenticated user guilds', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Member]);
 
+    // act & assert
     $this->actingAs($user)->getJson('/api/guilds')
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJsonStructure([
@@ -99,11 +106,13 @@ test('should return authenticated user guilds', function () {
 });
 
 test('should return all guilds acting as admin user', function () {
+    // arrange
     $user = User::factory([
         'is_super_admin' => true,
     ])->create();
     Guild::factory(5)->create();
 
+    // act & assert
     $this->actingAs($user)->getJson('/api/allGuilds')
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJsonStructure([
@@ -119,32 +128,36 @@ test('should return all guilds acting as admin user', function () {
 });
 
 test('cannot return all guilds acting as non-admin user', function () {
+    // arrange
     $user = User::factory(
         ['is_super_admin' => false]
     )->create();
     Guild::factory(5)->create();
 
+    // act & assert
     $this->actingAs($user)->getJson('/api/allGuilds')
         ->assertStatus(StatusCode::HTTP_UNAUTHORIZED)
         ->assertJson(['message' => 'Unauthorized']);
 });
 
 test('should return guild invite code', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Member]);
 
-    $this->actingAs($user)->getJson('/api/guilds/inviteCode/'.$guild->id)
+    // act & assert
+    $this->actingAs($user)->getJson('/api/guilds/inviteCode/' . $guild->id)
         ->assertStatus(StatusCode::HTTP_OK)
-        ->assertJson([
-            'invite_code' => $guild->invite_code,
-        ]);
+        ->assertJson(['invite_code' => $guild->invite_code]);
 });
 
 test('should entry into a Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
 
+    // act & assert
     $this->actingAs($user)->postJson('/api/guilds/entry/', ['invite_code' => $guild->invite_code])
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJsonStructure([
@@ -159,11 +172,13 @@ test('should entry into a Guild', function () {
 });
 
 test('should delete a Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
 
-    $this->actingAs($user)->deleteJson('/api/guilds/'.$guild->id)
+    // act & assert
+    $this->actingAs($user)->deleteJson('/api/guilds/' . $guild->id)
         ->assertStatus(StatusCode::HTTP_OK)
         ->assertJson([
             'message' => 'Guild successfully deleted',
@@ -171,25 +186,25 @@ test('should delete a Guild', function () {
 });
 
 test('should leave a Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Member]);
 
-    $this->actingAs($user)->postJson('/api/guilds/leave/'.$guild->id)
+    // act & assert
+    $this->actingAs($user)->postJson('/api/guilds/leave/' . $guild->id)
         ->assertStatus(StatusCode::HTTP_OK)
-        ->assertJsonStructure([
-            'message',
-        ]);
+        ->assertJsonStructure(['message']);
 });
 
 test('an admin cannot leave their Guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
 
-    $this->actingAs($user)->postJson('/api/guilds/leave/'.$guild->id)
+    // act & assert
+    $this->actingAs($user)->postJson('/api/guilds/leave/' . $guild->id)
         ->assertStatus(StatusCode::HTTP_UNAUTHORIZED)
-        ->assertJsonStructure([
-            'message',
-        ]);
+        ->assertJsonStructure(['message']);
 });

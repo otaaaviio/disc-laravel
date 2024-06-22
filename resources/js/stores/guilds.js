@@ -119,8 +119,11 @@ export const guilds = {
                         state.currentGuild = null;
                     toast.success('Left guild successfully');
                 })
-                .catch(() => {
-                    toast.error('An error occurred');
+                .catch((err) => {
+                    if(err.response?.status === 401)
+                        toast.error('You are the only admin, you cannot leave the guild');
+                    else
+                        toast.error('An error occurred');
                 });
         }
     },

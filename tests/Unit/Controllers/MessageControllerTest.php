@@ -22,6 +22,7 @@ uses(TestCase::class, DatabaseTransactions::class);
 uses()->group('MessageController Test');
 
 test('should send a message', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user, ['role' => Role::Admin]);
@@ -42,12 +43,13 @@ test('should send a message', function () {
 
     $messageController = new MessageController($mockMessageService);
 
+    // act
     $this->actingAs($user);
 
     $res = $messageController->store($guild, $channel, $requestMock);
 
+    // assert
     $this->assertEquals(StatusCode::HTTP_CREATED, $res->status());
-
     $this->assertEquals([
         'message' => 'Message sent successfully',
         'data' => MessageResource::make($messageReturned)->resolve(),
@@ -55,6 +57,7 @@ test('should send a message', function () {
 });
 
 test('should delete a message', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user, ['role' => Role::Admin]);
@@ -70,18 +73,20 @@ test('should delete a message', function () {
 
     $messageController = new MessageController($mockMessageService);
 
+    // act
     $this->actingAs($user);
 
     $res = $messageController->destroy($guild, $channel, $message);
 
+    // assert
     $this->assertEquals(StatusCode::HTTP_OK, $res->status());
-
     $this->assertEquals([
         'message' => 'Message deleted successfully',
     ], $res->getData(true));
 });
 
 test('cannot delete a message that is not your', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user, ['role' => Role::Admin]);
@@ -98,7 +103,7 @@ test('cannot delete a message that is not your', function () {
 
     $messageController = new MessageController($mockMessageService);
 
+    // act & assert
     $this->actingAs($user);
-
     $messageController->destroy($guild, $channel, $message);
 })->throws(MessageException::class);

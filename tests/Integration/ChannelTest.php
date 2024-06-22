@@ -13,10 +13,12 @@ uses(TestCase::class, DatabaseTransactions::class);
 uses()->group('Channel Test');
 
 test('should register a new channel in a existing guild', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
 
+    // act & assert
     $this->actingAs($user)
         ->postJson('api/guilds/'.$guild->id.'/channels', [
             'name' => 'Channel Test',
@@ -34,6 +36,7 @@ test('should register a new channel in a existing guild', function () {
 });
 
 test('should att a channel', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
@@ -41,6 +44,7 @@ test('should att a channel', function () {
         'guild_id' => $guild->id,
     ]);
 
+    // act & assert
     $this->actingAs($user)
         ->putJson('api/guilds/'.$guild->id.'/channels/'.$channel->id, [
             'name' => 'Channel Test',
@@ -58,6 +62,7 @@ test('should att a channel', function () {
 });
 
 test('should delete a channel', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Admin]);
@@ -65,6 +70,7 @@ test('should delete a channel', function () {
         'guild_id' => $guild->id,
     ]);
 
+    // act & assert
     $this->actingAs($user)
         ->deleteJson('api/guilds/'.$guild->id.'/channels/'.$channel->id, [
             'name' => 'Channel Test',
@@ -77,8 +83,10 @@ test('should delete a channel', function () {
 });
 
 test('cannot manage a non existing channel', function () {
+    // arrange
     $user = User::factory()->create();
 
+    // act & assert
     $this->actingAs($user)
         ->deleteJson('api/guilds/'. 99999 .'/channels/'. 99999, [
             'name' => 'Channel Test',
@@ -87,14 +95,14 @@ test('cannot manage a non existing channel', function () {
 });
 
 test('should join a channel', function () {
+    // arrange
     $user = User::factory()->create();
     $guild = Guild::factory()->create();
     $guild->members()->attach($user->id, ['role' => Role::Member]);
 
-    $channel = Channel::factory()->create([
-        'guild_id' => $guild->id,
-    ]);
+    $channel = Channel::factory()->create(['guild_id' => $guild->id]);
 
+    // act & assert
     $this->actingAs($user)
         ->getJson('api/guilds/'.$guild->id.'/channels/'.$channel->id)
         ->assertStatus(StatusCode::HTTP_OK)
