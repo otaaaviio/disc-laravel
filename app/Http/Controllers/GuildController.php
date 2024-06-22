@@ -18,6 +18,7 @@ class GuildController extends Controller
         $this->guildService = $guildService;
     }
 
+    // only super admin can access
     public function getAllGuilds(): JsonResponse
     {
         $guildsResource = $this->guildService->getAllGuilds();

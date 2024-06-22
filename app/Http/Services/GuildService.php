@@ -138,7 +138,7 @@ class GuildService implements IGuildService
             throw GuildException::notAGuildMemberException();
         }
 
-        if ($this->isAdmin($guild)) {
+        if ($this->checkRequestUserIsAdmin($guild)) {
             throw GuildException::adminCannotLeave();
         }
 
@@ -164,7 +164,7 @@ class GuildService implements IGuildService
         return substr(str_shuffle($characters), 0, 8);
     }
 
-    private function isAdmin(Guild $guild): bool
+    private function checkRequestUserIsAdmin(Guild $guild): bool
     {
         $guildMember = $guild->members()->wherePivot('user_id', auth()->id())->first();
 
