@@ -8,8 +8,8 @@ use App\Http\Resources\GuildDetailedResource;
 use App\Http\Resources\GuildResource;
 use App\Interfaces\Services\IGuildService;
 use App\Models\Guild;
-use App\Models\GuildMember;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Gate;
 use Throwable;
 use Illuminate\Support\Str;
 
@@ -41,11 +41,7 @@ class GuildService implements IGuildService
      */
     public function getGuild(Guild $guild): GuildDetailedResource
     {
-        $guild = Guild::where('id', $guild->id)->whereHas('members', function ($query) {
-            $query->where('user_id', auth()->id());
-        })->first();
-
-        if (! $guild) {
+        if (!Gate::authorize('view', $guild)) {
             throw GuildException::notAGuildMemberException();
         }
 
@@ -69,11 +65,7 @@ class GuildService implements IGuildService
      */
     public function getInviteCode(Guild $guild): string
     {
-        $guild_member = GuildMember::where('user_id', auth()->id())
-            ->where('guild_id', $guild->id)
-            ->first();
-
-        if (! $guild_member) {
+        if (!Gate::authorize('view', $guild)) {
             throw GuildException::notAGuildMemberException();
         }
 
@@ -111,7 +103,8 @@ class GuildService implements IGuildService
      */
     private function update(Guild $guild, array $data): GuildResource
     {
-        $this->checkManagerPermission($guild->id, auth()->id());
+        if(!Gate::authorize('updateOrDelete', $guild))
+            throw GuildException::dontHaveManagerPermission();
 
         $guild->update($data);
 
@@ -123,7 +116,8 @@ class GuildService implements IGuildService
      */
     public function delete(Guild $guild): void
     {
-        $this->checkManagerPermission($guild->id, auth()->id());
+        if(!Gate::authorize('updateOrDelete', $guild))
+            throw GuildException::dontHaveManagerPermission();
 
         $guild->delete();
     }
@@ -133,33 +127,14 @@ class GuildService implements IGuildService
      */
     public function leaveGuild(Guild $guild): void
     {
-        if (! $guild->members()->wherePivot('user_id', auth()->id())->exists()) {
+        if (!$guild->members()->wherePivot('user_id', auth()->id())->exists()) {
             throw GuildException::notAGuildMemberException();
         }
 
-        if ($this->checkRequestUserIsAdmin($guild)) {
+        if ($guild->isUserAdminInGuild(auth()->id())) {
             throw GuildException::adminCannotLeave();
         }
 
         $guild->members()->detach(auth()->id());
-    }
-
-    /**
-     * @throws GuildException
-     */
-    private function checkManagerPermission(int $guild_id, int $user_id): void
-    {
-        $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
-
-        if (! $guild_member || $guild_member->role !== Role::Admin->value) {
-            throw GuildException::dontHaveManagerPermission();
-        }
-    }
-
-    private function checkRequestUserIsAdmin(Guild $guild): bool
-    {
-        $guildMember = $guild->members()->wherePivot('user_id', auth()->id())->first();
-
-        return $guildMember && $guildMember->pivot->role === Role::Admin->value;
     }
 }

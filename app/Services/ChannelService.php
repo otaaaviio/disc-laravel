@@ -12,6 +12,7 @@ use App\Models\Channel;
 use App\Models\Guild;
 use App\Models\GuildMember;
 use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 
 class ChannelService implements IChannelService
 {
@@ -20,7 +21,8 @@ class ChannelService implements IChannelService
      */
     public function upsertChannel(array $data, Guild $guild, Channel $channel = null): ChannelResource
     {
-        $this->checkPermissions($guild->id, auth()->id());
+        if(!Gate::authorize('manageChannels', $guild))
+            throw ChannelException::dontHaveManagerPermission();
 
         $channel = Channel::updateOrCreate([
             'id' => $channel?->id,
@@ -35,7 +37,8 @@ class ChannelService implements IChannelService
      */
     public function deleteChannel(Guild $guild, Channel $channel): void
     {
-        $this->checkPermissions($guild->id, auth()->id());
+        if(!Gate::authorize('manageChannels', $guild))
+            throw ChannelException::dontHaveManagerPermission();
 
         $channel->delete();
     }
@@ -58,16 +61,5 @@ class ChannelService implements IChannelService
         }
 
         event(new UserJoinedChannel($channel->id, $user));
-    }
-
-    /**
-     * @throws ChannelException
-     */
-    private function checkPermissions(int $guild_id, int $user_id): void
-    {
-        $guild_member = GuildMember::where('user_id', $user_id)->where('guild_id', $guild_id)->first();
-        if (! $guild_member || ($guild_member->role !== Role::Admin->value && $guild_member->role !== Role::Moderator->value)) {
-            throw ChannelException::dontHaveManagerPermission();
-        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
 use Database\Factories\GuildFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -69,5 +70,13 @@ class Guild extends Model
         return $this->belongsToMany(User::class, 'guild_members')
             ->using(GuildMember::class)
             ->withPivot('role');
+    }
+
+    public function isUserAdminInGuild(int $user_id): bool
+    {
+        return $this->members()
+            ->where('user_id', $user_id)
+            ->where('role', Role::Admin)
+            ->exists();
     }
 }
