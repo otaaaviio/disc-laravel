@@ -57,6 +57,14 @@ ps: This step should take a while, because the docker will download the images a
 http://0.0.0.0:80
 ```
 
+5. In .env, you need change this variables for production:
+
+```
+REVERB_APP_ID=
+REVERB_APP_KEY=
+REVERB_APP_SECRET=
+```
+
 For the next times, you can use this for stop or start the containers:
 
 ```bash
