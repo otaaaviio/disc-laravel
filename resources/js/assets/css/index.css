@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --primary: #081826;
+    --secundary: #091D2F;
+    --terciary: #3D8BF2;
+    --color-chat: #0c273e;
+}
+
+.bg-side-bar {
+    background-color: var(--primary);
+}
+
+.bg-bars {
+    background-color: var(--secundary);
+}
+
+.bg-primary {
+    background-color: var(--color-chat);
+}
+
+.bg-chat {
+    background-color: var(--terciary);
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 80px;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+.hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.disc-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 50px;
+}
+
+.icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    background-color: #444;
+}
+
+.icon-button {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.blur {
+    filter: blur(4px);
+}
+
+.btn-disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
