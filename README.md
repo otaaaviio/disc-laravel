@@ -40,7 +40,6 @@ git clone https://github.com/otaaaviio/disc-laravel.git
 
 ```
 cd disc-laravel
-git checkout ota/development
 ```
 
 3. In src folder, execute the bin for setup:
@@ -107,7 +106,7 @@ functionality.
 
 ## Documentation
 
-I use the [scramble](https://scramble.dedoc.co/) for the api documentation. You can see accessing the address:
+I used the [scramble](https://scramble.dedoc.co/) for the api documentation. You can see accessing the address:
 
 ```
 http://0.0.0.0:80/docs/api
@@ -119,7 +118,7 @@ In this documentation, you can see the endpoints, request and response examples.
 
 ### Services: <br>
 
-I use service abstraction, to separate the business logic from the controller and have a better maintenance. <br>
+I used service abstraction, to separate the business logic from the controller and have a better maintenance. <br>
 
 ### Repositories: <br>
 
@@ -129,26 +128,26 @@ In larger projects, where there might be a need to change the framework, the rep
 
 ### Websockets: <br>
 
-I use Laravel Reverb to implement the websockets. It's not hard to implement, but debug this should be a little hard if
+I used Laravel Reverb to implement the websockets. It's not hard to implement, but debug this should be a little hard if
 you don't have familiarity with websockets. <br>
 Even though it's a relatively new technology, it's a good choice to learn and apply in your personal or professional
 projects.
 
 ### Jobs: <br>
 
-I use jobs to send the mail to new users, with welcome message. And use a different connection to send the mail. <br>
+I used jobs to send the mail to new users, with welcome message. And use a different connection to send the mail. <br>
 
 ### Tests: <br>
 
-I use Pest for tests. It's a simple and clean test framework. I like it because it's easy to read and write tests. <br>
+I used Pest for tests. It's a simple and clean test framework. I like it because it's easy to read and write tests. <br>
 
 ### Docker: <br>
 
-I use the Laravel Sail with some modifications for this project, like change the images and add vite container. <br>
+I used the Laravel Sail with some modifications for this project, like change the images and add vite container. <br>
 
 ### FrontEnd: <br>
 
-I use Vue for frontend, just for my familiarity with this framework.
+I used Vue for frontend, just for my familiarity with this framework.
 And I focus in the backend, so the frontend is simple and functional.
 
 ## Contributing and Examples
