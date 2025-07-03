@@ -290,7 +290,7 @@ For more infos, you can see the [Laravel Documentation](https://laravel.com/docs
 If you have any questions, you can contact me by email or linkedin:
 
 ```
-oglamberty@inf.ufsm.br
+otavio18gl@gmail.com
 
 https://www.linkedin.com/in/otaaaviio/
 ```
